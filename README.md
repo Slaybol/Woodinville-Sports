@@ -1,6 +1,22 @@
-# Gridiron Connect
+# Woodinville Sports - Gridiron Connect
 
-A communication platform for youth football teams, connecting coaches, parents, and team administrators.
+A communication platform for Woodinville High School Falcons Football, connecting coaches, parents, and team administrators.
+
+## 🏈 Features
+
+### Core Features
+- **Dashboard**: Quick overview of upcoming events, alerts, and volunteer needs
+- **Schedule**: View practices, games, meetings with details
+- **Announcements**: Team updates with reactions and comments
+- **Volunteer Signup**: Sign up for team activities
+- **Documents**: Access forms, waivers, and team resources
+- **Emergency Contacts**: Quick access to important contacts
+
+### Enhanced Features
+- **Reactions System**: Like, Heart, Thumbs Up, Celebrate, Pray reactions on announcements
+- **Comments Section**: Expandable comments with real-time updates
+- **Role-Based Access**: Coach, Team Parent, Parent permissions
+- **Woodinville Branding**: Official WHS green and white color scheme
 
 ## Tech Stack
 
@@ -19,7 +35,8 @@ woodinville-connect/
 ├── packages/
 │   └── shared/       # Shared types and utilities
 └── supabase/
-    └── schema.sql    # Database schema
+    ├── schema.sql    # Main database schema
+    └── announcements_reactions_comments.sql # Reactions & comments
 ```
 
 ## Getting Started
@@ -34,7 +51,7 @@ woodinville-connect/
 ### 1. Clone and Install
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/Slaybol/Woodinville-Sports.git
 cd woodinville-connect
 npm install
 ```
@@ -43,7 +60,8 @@ npm install
 
 1. Create a new project at [supabase.com](https://supabase.com)
 2. Go to SQL Editor and run the contents of `supabase/schema.sql`
-3. Copy your project URL and anon key from Settings > API
+3. Run `supabase/announcements_reactions_comments.sql` for enhanced features
+4. Copy your project URL and anon key from Settings > API
 
 ### 3. Configure Environment Variables
 
@@ -73,21 +91,6 @@ npm run mobile
 # Scan QR code with Expo Go app
 ```
 
-## Features
-
-### MVP Features
-- **Dashboard**: Quick overview of upcoming events, alerts, and volunteer needs
-- **Schedule**: View practices, games, meetings with details
-- **Announcements**: Team updates with urgent message highlighting
-- **Volunteer Signup**: Sign up for team activities
-- **Documents**: Access forms, waivers, and team resources
-- **Emergency Contacts**: Quick access to important contacts
-
-### Role-Based Access
-- **Coach**: Full control over all features
-- **Team Parent**: Manage volunteers and announcements
-- **Parent**: View-only access + volunteer signup
-
 ## Database Schema
 
 Key tables:
@@ -96,6 +99,8 @@ Key tables:
 - `team_members` - User-team relationships with roles
 - `events` - Practices, games, meetings
 - `announcements` - Team communications
+- `announcement_reactions` - Reactions on announcements
+- `announcement_comments` - Comments on announcements
 - `volunteer_slots` / `volunteer_signups` - Volunteer coordination
 - `documents` - Team document library
 - `emergency_contacts` - Important contacts
