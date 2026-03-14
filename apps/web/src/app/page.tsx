@@ -14,11 +14,16 @@ import {
   Menu,
   X,
   Home,
-  Phone
+  Phone,
+  LogOut,
+  User,
+  Settings
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { useAuth } from '@/contexts/auth-context'
+import Link from 'next/link'
 
 const mockNextEvent = {
   title: 'KingCo Championship Game',
@@ -93,17 +98,71 @@ const mockVolunteerNeeds = [
   { id: 3, title: 'Ticket Sales - Game Day', date: 'Nov 15', slots: 3 },
 ]
 
-const navItems = [
-  { icon: Home, label: 'Home', href: '/' },
-  { icon: Calendar, label: 'Schedule', href: '/schedule' },
-  { icon: Bell, label: 'Announcements', href: '/announcements' },
-  { icon: Users, label: 'Volunteers', href: '/volunteers' },
-  { icon: FileText, label: 'Documents', href: '/documents' },
-  { icon: Phone, label: 'Emergency', href: '/emergency' },
-]
-
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { user, profile, loading, signOut } = useAuth()
+
+  // Generate navigation items based on user role
+  const navItems = [
+    { icon: Home, label: 'Home', href: '/' },
+    { icon: Calendar, label: 'Schedule', href: '/schedule' },
+    { icon: Bell, label: 'Announcements', href: '/announcements' },
+    { icon: Users, label: 'Volunteers', href: '/volunteers' },
+    { icon: FileText, label: 'Documents', href: '/documents' },
+    { icon: Phone, label: 'Emergency', href: '/emergency' },
+    // Temporarily show admin for all users for testing
+    { icon: Settings, label: 'Admin', href: '/admin' },
+  ]
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl font-bold text-white">W</span>
+          </div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Redirect to auth if not logged in
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl font-bold text-white">W</span>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900">Woodinville Sports</h1>
+            <p className="text-gray-600">Falcons Football • Gridiron Connect</p>
+          </div>
+          
+          <Card className="falcons-card">
+            <CardContent className="p-6 text-center">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Welcome to Gridiron Connect</h2>
+              <p className="text-gray-600 mb-6">Please sign in to access the Woodinville Falcons Football communication platform.</p>
+              
+              <Link href="/auth">
+                <Button className="w-full falcons-button">
+                  Sign In
+                </Button>
+              </Link>
+              
+              <div className="mt-4">
+                <Link href="/auth" className="text-green-600 hover:text-green-800 text-sm">
+                  Don't have an account? Sign up
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -121,45 +180,56 @@ export default function HomePage() {
               </div>
             </div>
             
-            {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center gap-1">
-              {navItems.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="px-4 py-2 rounded-md text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white transition-colors"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </nav>
-
-            {/* Mobile menu button */}
-            <button
-              className="md:hidden p-2 rounded-md hover:bg-white/10 text-white"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            {/* User Menu */}
+            <div className="flex items-center gap-4">
+              <div className="hidden md:flex items-center gap-2 text-white/90 text-sm">
+                <User size={16} />
+                <span>{profile?.full_name || user?.email}</span>
+                {profile?.role && (
+                  <Badge variant="outline" className="text-white border-white/50">
+                    {profile.role.replace('_', ' ')}
+                  </Badge>
+                )}
+                {profile?.teams && profile.teams.length > 0 && (
+                  <Badge variant="outline" className="text-white border-white/50">
+                    {profile.teams[0].name}
+                  </Badge>
+                )}
+              </div>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={signOut}
+                className="text-white/90 hover:text-white hover:bg-white/10"
+              >
+                <LogOut size={16} />
+                <span className="hidden md:inline ml-2">Sign Out</span>
+              </Button>
+            </div>
           </div>
         </div>
-
-        {/* Mobile Nav */}
-        {mobileMenuOpen && (
-          <nav className="md:hidden border-t border-white/20 pb-3">
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-white/90 hover:bg-white/10"
-              >
-                <item.icon size={20} />
-                {item.label}
-              </a>
-            ))}
-          </nav>
-        )}
       </header>
+
+      {/* Navigation */}
+      <nav className="bg-white border-b border-gray-200 sticky top-16 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-12">
+            <div className="flex items-center gap-6">
+              {navItems.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-green-600 transition-colors"
+                >
+                  <item.icon size={16} />
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </nav>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Falcons Achievements Banner */}
