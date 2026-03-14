@@ -1,0 +1,19 @@
+{
+  "name": "gridiron-connect",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "web": "npm run dev --workspace=@gridiron/web",
+    "mobile": "npm run start --workspace=@gridiron/mobile",
+    "build:web": "npm run build --workspace=@gridiron/web",
+    "lint": "npm run lint --workspaces --if-present",
+    "db:generate-types": "npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > packages/shared/src/types/database.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
