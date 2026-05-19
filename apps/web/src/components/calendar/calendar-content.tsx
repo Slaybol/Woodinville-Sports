@@ -22,6 +22,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface CalendarContentProps {
   events: CalendarEvent[]
+  dataState?: {
+    source: 'supabase' | 'demo'
+    reason?: string
+  }
 }
 
 const filters = ['All', 'Varsity', 'JV', 'C-Team', 'Deadlines']
@@ -73,7 +77,7 @@ function dayLabel(event: CalendarEvent) {
   return 'Date'
 }
 
-export function CalendarContent({ events }: CalendarContentProps) {
+export function CalendarContent({ events, dataState }: CalendarContentProps) {
   const featured = events.find((event) => event.event_type === 'camp') || events[0]
 
   return (
@@ -95,6 +99,17 @@ export function CalendarContent({ events }: CalendarContentProps) {
 
       <main className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:px-8">
         <section className="space-y-6">
+          {dataState && (
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge className={dataState.source === 'supabase' ? 'bg-falcon-100 text-falcon-900' : 'bg-gold-100 text-amber-950'}>
+                {dataState.source === 'supabase' ? 'Live Supabase' : 'Demo Fallback'}
+              </Badge>
+              {dataState.reason && dataState.source === 'demo' && (
+                <span className="text-sm text-ink-600">{dataState.reason}</span>
+              )}
+            </div>
+          )}
+
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <Badge variant="outline">Coach calendar</Badge>

@@ -1,8 +1,8 @@
 import { CalendarContent } from '@/components/calendar/calendar-content'
-import { getCalendarEvents } from '@/lib/data/events'
+import { getCalendarEventsResult } from '@/lib/data/events'
 
 export default async function CalendarPage() {
-  const events = await getCalendarEvents()
+  const result = await getCalendarEventsResult()
 
-  return <CalendarContent events={events} />
+  return <CalendarContent events={result.events} dataState={{ source: result.source, reason: result.reason }} />
 }

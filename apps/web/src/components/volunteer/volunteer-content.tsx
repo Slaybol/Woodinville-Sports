@@ -21,6 +21,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface VolunteerContentProps {
   model: VolunteerCenterModel
+  preview?: boolean
+  dataState?: {
+    source: 'supabase' | 'demo'
+    reason?: string
+  }
 }
 
 const filters = ['All', 'Game day', 'Meals', 'Camp', 'Fundraising']
@@ -52,7 +57,7 @@ function categoryLabel(category: VolunteerCategory) {
   }
 }
 
-export function VolunteerContent({ model }: VolunteerContentProps) {
+export function VolunteerContent({ model, preview = false, dataState }: VolunteerContentProps) {
   const remaining = Math.max(model.volunteer_hours_goal - model.volunteer_hours_complete, 0)
   const percent =
     model.volunteer_hours_goal === 0
@@ -61,25 +66,38 @@ export function VolunteerContent({ model }: VolunteerContentProps) {
 
   return (
     <div className="min-h-screen bg-ink-50 pb-20 md:pb-0">
-      <header className="falcons-header sticky top-0 z-50">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex h-9 w-9 items-center justify-center rounded-md bg-white/15 text-white">
-              <ChevronLeft size={20} />
-            </Link>
-            <div>
-              <p className="text-base font-bold leading-5">Volunteer</p>
-              <p className="text-xs text-white/75">Family hours and open roles</p>
+      {!preview && (
+        <header className="falcons-header sticky top-0 z-50">
+          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-3">
+              <Link href="/" className="flex h-9 w-9 items-center justify-center rounded-md bg-white/15 text-white">
+                <ChevronLeft size={20} />
+              </Link>
+              <div>
+                <p className="text-base font-bold leading-5">Volunteer</p>
+                <p className="text-xs text-white/75">Family hours and open roles</p>
+              </div>
             </div>
+            <Badge className="hidden bg-white/15 text-white md:inline-flex">
+              {model.volunteer_hours_complete} of {model.volunteer_hours_goal} hours
+            </Badge>
           </div>
-          <Badge className="hidden bg-white/15 text-white md:inline-flex">
-            {model.volunteer_hours_complete} of {model.volunteer_hours_goal} hours
-          </Badge>
-        </div>
-      </header>
+        </header>
+      )}
 
       <main className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:px-8">
         <section className="space-y-6">
+          {dataState && (
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge className={dataState.source === 'supabase' ? 'bg-falcon-100 text-falcon-900' : 'bg-gold-100 text-amber-950'}>
+                {dataState.source === 'supabase' ? 'Live Supabase' : 'Demo Fallback'}
+              </Badge>
+              {dataState.reason && dataState.source === 'demo' && (
+                <span className="text-sm text-ink-600">{dataState.reason}</span>
+              )}
+            </div>
+          )}
+
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <Badge variant="success">{model.volunteer_hours_complete} hours credited</Badge>
@@ -212,22 +230,24 @@ export function VolunteerContent({ model }: VolunteerContentProps) {
         </aside>
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-ink-200 bg-white md:hidden">
-        <div className="grid h-16 grid-cols-5">
-          {navItems.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`flex flex-col items-center justify-center gap-1 text-[11px] font-bold ${
-                item.href === '/volunteers' ? 'text-falcon-700' : 'text-ink-500'
-              }`}
-            >
-              <item.icon size={21} />
-              {item.label}
-            </Link>
-          ))}
-        </div>
-      </nav>
+      {!preview && (
+        <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-ink-200 bg-white md:hidden">
+          <div className="grid h-16 grid-cols-5">
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`flex flex-col items-center justify-center gap-1 text-[11px] font-bold ${
+                  item.href === '/volunteers' ? 'text-falcon-700' : 'text-ink-500'
+                }`}
+              >
+                <item.icon size={21} />
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </nav>
+      )}
     </div>
   )
 }

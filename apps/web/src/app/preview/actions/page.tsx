@@ -1,9 +1,9 @@
-import { HuddleHomeContent } from '@/components/huddle/huddle-home-content'
+import { ActionCenterContent } from '@/components/actions/action-center-content'
 import { Badge } from '@/components/ui/badge'
-import { getCurrentHuddleHomeResult } from '@/lib/data/huddles'
+import { getActionCenterResult } from '@/lib/data/actions'
 
-export default async function HuddlePreviewPage() {
-  const huddleHome = await getCurrentHuddleHomeResult()
+export default async function ActionCenterPreviewPage() {
+  const actionCenter = await getActionCenterResult()
 
   return (
     <div className="min-h-screen bg-ink-50 pb-20 md:pb-0">
@@ -15,28 +15,28 @@ export default async function HuddlePreviewPage() {
             </div>
             <div>
               <p className="text-base font-bold leading-5">Gridiron Connect</p>
-              <p className="text-xs text-white/75">Preview mode</p>
+              <p className="text-xs text-white/75">Action Center preview</p>
             </div>
           </div>
 
           <div className="hidden items-center gap-2 md:flex">
             <Badge className="bg-white/15 text-white">No sign-in required</Badge>
-            <Badge className={huddleHome.source === 'supabase' ? 'bg-falcon-100 text-falcon-900' : 'bg-gold-100 text-amber-950'}>
-              {huddleHome.source === 'supabase' ? 'Live Supabase' : 'Demo Fallback'}
+            <Badge className={actionCenter.source === 'supabase' ? 'bg-falcon-100 text-falcon-900' : 'bg-gold-100 text-amber-950'}>
+              {actionCenter.source === 'supabase' ? 'Live Supabase' : 'Demo Fallback'}
             </Badge>
           </div>
         </div>
       </header>
 
-      {huddleHome.reason && huddleHome.source === 'demo' && (
+      {actionCenter.reason && actionCenter.source === 'demo' && (
         <div className="mx-auto max-w-6xl px-4 pt-4 sm:px-6 lg:px-8">
           <div className="rounded-lg border border-gold-100 bg-gold-100 px-4 py-3 text-sm text-amber-950">
-            Preview is showing demo data. Reason: {huddleHome.reason}
+            Preview is showing demo data. Reason: {actionCenter.reason}
           </div>
         </div>
       )}
 
-      <HuddleHomeContent model={huddleHome.model} preview />
+      <ActionCenterContent model={actionCenter.model} preview />
     </div>
   )
 }

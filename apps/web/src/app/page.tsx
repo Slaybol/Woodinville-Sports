@@ -1,28 +1,17 @@
-'use client'
-
 import Link from 'next/link'
-import { LogOut, User } from 'lucide-react'
 import { HuddleHomeContent } from '@/components/huddle/huddle-home-content'
+import { SignedInHomeHeader } from '@/components/home/signed-in-home-header'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useAuth } from '@/contexts/auth-context'
-import { huddleHomeDemo } from '@/lib/demo-data'
+import { getCurrentHuddleHomeResult } from '@/lib/data/huddles'
+import { createClient } from '@/lib/supabase/server'
 
-export default function HomePage() {
-  const { user, profile, loading, signOut } = useAuth()
-
-  if (loading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-ink-50 px-4">
-        <div className="text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-falcon-900 text-2xl font-bold text-white">
-            W
-          </div>
-          <p className="text-sm text-ink-600">Loading Gridiron Connect...</p>
-        </div>
-      </main>
-    )
-  }
+export default async function HomePage() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   if (!user) {
     return (
@@ -59,39 +48,27 @@ export default function HomePage() {
     )
   }
 
+  const huddleHome = await getCurrentHuddleHomeResult()
+
   return (
     <div className="min-h-screen bg-ink-50 pb-20 md:pb-0">
-      <header className="falcons-header sticky top-0 z-50">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/15 text-lg font-bold text-white">
-              W
-            </div>
-            <div>
-              <p className="text-base font-bold leading-5">Gridiron Connect</p>
-              <p className="text-xs text-white/75">Woodinville Football Weekly Huddle</p>
-            </div>
-          </div>
+      <SignedInHomeHeader />
 
-          <div className="hidden items-center gap-3 md:flex">
-            <div className="flex items-center gap-2 text-sm text-white/85">
-              <User size={16} />
-              <span>{profile?.full_name || user.email}</span>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={signOut}
-              className="text-white hover:bg-white/10 hover:text-white"
-            >
-              <LogOut size={16} className="mr-2" />
-              Sign Out
-            </Button>
+      {huddleHome.source === 'demo' && huddleHome.reason && (
+        <div className="mx-auto max-w-6xl px-4 pt-4 sm:px-6 lg:px-8">
+          <div className="rounded-lg border border-gold-100 bg-gold-100 px-4 py-3 text-sm text-amber-950">
+            Signed-in home is showing demo data. Reason: {huddleHome.reason}
           </div>
         </div>
-      </header>
+      )}
 
-      <HuddleHomeContent model={huddleHomeDemo} />
+      <div className="mx-auto max-w-6xl px-4 pt-4 sm:px-6 lg:px-8">
+        <Badge className={huddleHome.source === 'supabase' ? 'bg-falcon-100 text-falcon-900' : 'bg-gold-100 text-amber-950'}>
+          {huddleHome.source === 'supabase' ? 'Live Supabase' : 'Demo Fallback'}
+        </Badge>
+      </div>
+
+      <HuddleHomeContent model={huddleHome.model} />
     </div>
   )
 }

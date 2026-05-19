@@ -1,8 +1,8 @@
 import { ActionCenterContent } from '@/components/actions/action-center-content'
-import { getActionCenter } from '@/lib/data/actions'
+import { getActionCenterResult } from '@/lib/data/actions'
 
 export default async function ActionCenterPage() {
-  const actionCenter = await getActionCenter()
+  const actionCenter = await getActionCenterResult()
 
-  return <ActionCenterContent model={actionCenter} />
+  return <ActionCenterContent model={actionCenter.model} dataState={{ source: actionCenter.source, reason: actionCenter.reason }} />
 }

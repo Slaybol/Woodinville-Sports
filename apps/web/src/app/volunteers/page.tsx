@@ -1,8 +1,8 @@
 import { VolunteerContent } from '@/components/volunteer/volunteer-content'
-import { getVolunteerCenter } from '@/lib/data/volunteers'
+import { getVolunteerCenterResult } from '@/lib/data/volunteers'
 
 export default async function VolunteersPage() {
-  const volunteerCenter = await getVolunteerCenter()
+  const volunteerCenter = await getVolunteerCenterResult()
 
-  return <VolunteerContent model={volunteerCenter} />
+  return <VolunteerContent model={volunteerCenter.model} dataState={{ source: volunteerCenter.source, reason: volunteerCenter.reason }} />
 }

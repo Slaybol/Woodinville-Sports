@@ -6,6 +6,7 @@ Draft backend design for the Gridiron Connect rebuild.
 
 - [Rebuild schema draft](../supabase/rebuild_schema.sql)
 - [Rebuild seed data](../supabase/rebuild_seed.sql)
+- [Preview policy patch](../supabase/rebuild_preview_policies.sql)
 
 These files are drafts. They are intentionally separate from the existing prototype SQL files.
 

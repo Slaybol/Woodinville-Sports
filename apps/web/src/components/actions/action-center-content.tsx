@@ -22,6 +22,11 @@ import { Card, CardContent } from '@/components/ui/card'
 
 interface ActionCenterContentProps {
   model: ActionCenterModel
+  preview?: boolean
+  dataState?: {
+    source: 'supabase' | 'demo'
+    reason?: string
+  }
 }
 
 const filters = ['All', 'Required', 'Due soon', 'Complete']
@@ -96,7 +101,7 @@ function importanceLabel(action: ActionItem) {
   return 'Info'
 }
 
-export function ActionCenterContent({ model }: ActionCenterContentProps) {
+export function ActionCenterContent({ model, preview = false, dataState }: ActionCenterContentProps) {
   const urgentCount = model.items.filter(({ action, status }) => isUrgent(action, status.status)).length
   const dueSoonCount = model.items.filter(({ action, status }) => isDueSoon(action, status.status)).length
   const percent =
@@ -106,24 +111,37 @@ export function ActionCenterContent({ model }: ActionCenterContentProps) {
 
   return (
     <div className="min-h-screen bg-ink-50 pb-20 md:pb-0">
-      <header className="falcons-header sticky top-0 z-50">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex h-9 w-9 items-center justify-center rounded-md bg-white/15 text-white">
-              <ChevronLeft size={20} />
-            </Link>
-            <div>
-              <p className="text-base font-bold leading-5">Action Center</p>
-              <p className="text-xs text-white/75">Family checklist and deadlines</p>
+      {!preview && (
+        <header className="falcons-header sticky top-0 z-50">
+          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-3">
+              <Link href="/" className="flex h-9 w-9 items-center justify-center rounded-md bg-white/15 text-white">
+                <ChevronLeft size={20} />
+              </Link>
+              <div>
+                <p className="text-base font-bold leading-5">Action Center</p>
+                <p className="text-xs text-white/75">Family checklist and deadlines</p>
+              </div>
             </div>
+            <Badge className="hidden bg-white/15 text-white md:inline-flex">
+              {model.progress.action_items_complete} of {model.progress.action_items_total} complete
+            </Badge>
           </div>
-          <Badge className="hidden bg-white/15 text-white md:inline-flex">
-            {model.progress.action_items_complete} of {model.progress.action_items_total} complete
-          </Badge>
-        </div>
-      </header>
+        </header>
+      )}
 
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+        {dataState && (
+          <div className="mb-6 flex flex-wrap items-center gap-2">
+            <Badge className={dataState.source === 'supabase' ? 'bg-falcon-100 text-falcon-900' : 'bg-gold-100 text-amber-950'}>
+              {dataState.source === 'supabase' ? 'Live Supabase' : 'Demo Fallback'}
+            </Badge>
+            {dataState.reason && dataState.source === 'demo' && (
+              <span className="text-sm text-ink-600">{dataState.reason}</span>
+            )}
+          </div>
+        )}
+
         <section className="mb-6 grid gap-4 md:grid-cols-[minmax(0,1fr)_280px]">
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -206,22 +224,24 @@ export function ActionCenterContent({ model }: ActionCenterContentProps) {
         </Card>
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-ink-200 bg-white md:hidden">
-        <div className="grid h-16 grid-cols-5">
-          {navItems.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`flex flex-col items-center justify-center gap-1 text-[11px] font-bold ${
-                item.href === '/actions' ? 'text-falcon-700' : 'text-ink-500'
-              }`}
-            >
-              <item.icon size={21} />
-              {item.label}
-            </Link>
-          ))}
-        </div>
-      </nav>
+      {!preview && (
+        <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-ink-200 bg-white md:hidden">
+          <div className="grid h-16 grid-cols-5">
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`flex flex-col items-center justify-center gap-1 text-[11px] font-bold ${
+                  item.href === '/actions' ? 'text-falcon-700' : 'text-ink-500'
+                }`}
+              >
+                <item.icon size={21} />
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </nav>
+      )}
     </div>
   )
 }
