@@ -1,466 +1,246 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useAuth } from '@/contexts/auth-context'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import {
+  AlertTriangle,
+  CalendarDays,
+  CheckCircle2,
+  ClipboardList,
+  Edit3,
+  Home,
+  Megaphone,
+  Plus,
+  Send,
+  Settings,
+  Users,
+} from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { Users, Mail, Calendar, CheckCircle, XCircle, Clock, Plus } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-interface Invitation {
-  id: string
-  code: string
-  email: string | null
-  full_name: string | null
-  role: 'parent' | 'team_parent' | 'coach'
-  team_id: string
-  team_name: string
-  status: 'pending' | 'accepted' | 'expired' | 'revoked'
-  expires_at: string
-  accepted_at: string | null
-  message: string | null
-  created_at: string
+const metrics = [
+  {
+    label: 'Current Huddle',
+    value: 'Draft',
+    detail: 'May 24-31 needs review',
+    tone: 'warning',
+  },
+  {
+    label: 'Action Completion',
+    value: '42%',
+    detail: 'FinalForms still low',
+    tone: 'destructive',
+  },
+  {
+    label: 'Volunteer Gaps',
+    value: '9',
+    detail: 'Open slots across 3 needs',
+    tone: 'warning',
+  },
+  {
+    label: 'Families Missing Setup',
+    value: '14',
+    detail: 'Need invitation follow-up',
+    tone: 'info',
+  },
+]
+
+const queues = [
+  {
+    title: 'FinalForms Registration',
+    detail: 'Deadline May 26; 58% incomplete',
+    badge: 'Urgent',
+    tone: 'destructive' as const,
+    icon: AlertTriangle,
+  },
+  {
+    title: 'CWU Camp Registration',
+    detail: 'Deadline June 3; reminder should go in next huddle',
+    badge: 'Due soon',
+    tone: 'warning' as const,
+    icon: ClipboardList,
+  },
+  {
+    title: 'Concessions planning',
+    detail: '4 slots open; assign coordinator follow-up',
+    badge: 'Volunteer',
+    tone: 'success' as const,
+    icon: Users,
+  },
+  {
+    title: 'Spring Football begins',
+    detail: 'Confirm first-week schedule details before publishing',
+    badge: 'Calendar',
+    tone: 'info' as const,
+    icon: CalendarDays,
+  },
+]
+
+const eventsNeedingDetails = [
+  'Spring Football first week times',
+  'CWU Camp travel instructions',
+  'Summer weights + speed/agility schedule',
+]
+
+const adminNav = [
+  { label: 'Dashboard', href: '/admin', icon: Home },
+  { label: 'Huddles', href: '/admin/huddles/new', icon: Megaphone },
+  { label: 'Actions', href: '/admin/actions', icon: ClipboardList },
+  { label: 'Calendar', href: '/admin/calendar', icon: CalendarDays },
+  { label: 'Families', href: '/admin/families', icon: Users },
+  { label: 'Settings', href: '/admin/settings', icon: Settings },
+]
+
+function metricBadge(tone: string) {
+  if (tone === 'destructive') return 'destructive'
+  if (tone === 'warning') return 'warning'
+  if (tone === 'info') return 'info'
+  return 'success'
 }
 
-export default function AdminDashboard() {
-  const { user, profile } = useAuth()
-  const [invitations, setInvitations] = useState<Invitation[]>([])
-  const [loading, setLoading] = useState(true)
-  const [showCreateForm, setShowCreateForm] = useState(false)
-  const [teams, setTeams] = useState<Array<{id: string, name: string}>>([])
-
-  // Check if user has admin access - temporarily disabled for testing
-  const hasAdminAccess = true // profile?.role === 'coach' || profile?.role === 'team_parent'
-
-  useEffect(() => {
-    if (!hasAdminAccess) return
-    
-    loadInvitations()
-    loadTeams()
-  }, [hasAdminAccess])
-
-  const loadInvitations = async () => {
-    try {
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
-
-      const { data, error } = await supabase
-        .from('invitations')
-        .select(`
-          *,
-          teams!inner(name)
-        `)
-        .eq('invited_by', user?.id)
-        .order('created_at', { ascending: false })
-
-      if (error) throw error
-      setInvitations(data || [])
-    } catch (error) {
-      console.error('Error loading invitations:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const loadTeams = async () => {
-    try {
-      console.log('Loading teams...')
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
-
-      const { data, error } = await supabase
-        .from('teams')
-        .select('id, name')
-        .eq('sport', 'football')
-        .order('name')
-
-      console.log('Teams query result:', { data, error })
-      
-      if (error) {
-        console.error('Teams query error:', error)
-        throw error
-      }
-      
-      console.log('Setting teams:', data)
-      setTeams(data || [])
-    } catch (error) {
-      console.error('Error loading teams:', error)
-    }
-  }
-
-  const createInvitation = async (formData: {
-    email: string
-    fullName: string
-    role: 'parent' | 'team_parent' | 'coach'
-    teamId: string
-    message: string
-  }) => {
-    try {
-      console.log('Creating invitation with data:', formData)
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
-
-      // Generate invitation code
-      console.log('Generating invitation code...')
-      const { data: codeData, error: codeError } = await supabase.rpc('generate_invitation_code')
-      
-      if (codeError) {
-        console.error('Error generating code:', codeError)
-        throw codeError
-      }
-      
-      console.log('Generated code:', codeData)
-      
-      // Create invitation
-      console.log('Creating invitation record...')
-      const { error } = await supabase
-        .from('invitations')
-        .insert({
-          code: codeData,
-          email: formData.email,
-          full_name: formData.fullName,
-          role: formData.role,
-          team_id: formData.teamId,
-          invited_by: user?.id,
-          expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
-          message: formData.message,
-        })
-
-      if (error) {
-        console.error('Error creating invitation:', error)
-        throw error
-      }
-
-      console.log('Invitation created successfully')
-      setShowCreateForm(false)
-      loadInvitations()
-    } catch (error) {
-      console.error('Error in createInvitation:', error)
-    }
-  }
-
-  const revokeInvitation = async (invitationId: string) => {
-    try {
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
-
-      const { error } = await supabase
-        .from('invitations')
-        .update({ status: 'revoked' })
-        .eq('id', invitationId)
-
-      if (error) throw error
-      loadInvitations()
-    } catch (error) {
-      console.error('Error revoking invitation:', error)
-    }
-  }
-
-  if (!hasAdminAccess) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardContent className="p-6 text-center">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">Access Denied</h2>
-            <p className="text-gray-600">You don't have permission to access the admin dashboard.</p>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
+export default function AdminDashboardPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+    <div className="min-h-screen bg-ink-50">
       <header className="falcons-header sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                <span className="text-xl font-bold text-white">W</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-white">Admin Dashboard</h1>
-                <p className="text-xs text-green-100">Invitation Management</p>
-              </div>
-            </div>
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div>
+            <p className="text-base font-bold leading-5">Gridiron Admin</p>
+            <p className="text-xs text-white/75">Weekly Huddle operations</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Link href="/admin/huddles/new">
+              <Button size="sm" className="bg-white text-falcon-900 hover:bg-falcon-50">
+                <Plus size={15} className="mr-1" />
+                New Huddle
+              </Button>
+            </Link>
+            <Badge className="hidden bg-white/15 text-white md:inline-flex">Admin preview</Badge>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="mb-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900">Team Invitations</h2>
-            <Button
-              onClick={() => setShowCreateForm(!showCreateForm)}
-              className="falcons-button"
-            >
-              <Plus size={16} className="mr-2" />
-              Create Invitation
-            </Button>
-          </div>
-        </div>
-
-        {showCreateForm && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Create New Invitation</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CreateInvitationForm
-                teams={teams}
-                onSubmit={createInvitation}
-                onCancel={() => setShowCreateForm(false)}
-              />
-            </CardContent>
-          </Card>
-        )}
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Mail size={20} />
-              Sent Invitations
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="text-center py-8">
-                <p className="text-gray-600">Loading invitations...</p>
-              </div>
-            ) : invitations.length === 0 ? (
-              <div className="text-center py-8">
-                <Users size={48} className="mx-auto text-gray-400 mb-4" />
-                <p className="text-gray-600">No invitations sent yet</p>
-                <p className="text-sm text-gray-500 mt-2">Create your first invitation to get started</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {invitations.map((invitation) => (
-                  <InvitationCard
-                    key={invitation.id}
-                    invitation={invitation}
-                    onRevoke={() => revokeInvitation(invitation.id)}
-                  />
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </main>
-    </div>
-  )
-}
-
-function CreateInvitationForm({
-  teams,
-  onSubmit,
-  onCancel
-}: {
-  teams: Array<{id: string, name: string}>
-  onSubmit: (data: any) => void
-  onCancel: () => void
-}) {
-  const [formData, setFormData] = useState({
-    email: '',
-    fullName: '',
-    role: 'parent' as 'parent' | 'team_parent' | 'coach',
-    teamId: '',
-    message: ''
-  })
-  const [loading, setLoading] = useState(false)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    await onSubmit(formData)
-    setLoading(false)
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Email Address
-          </label>
-          <input
-            type="email"
-            value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Full Name
-          </label>
-          <input
-            type="text"
-            value={formData.fullName}
-            onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Role
-          </label>
-          <select
-            value={formData.role}
-            onChange={(e) => setFormData({...formData, role: e.target.value as any})}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          >
-            <option value="parent">Parent</option>
-            <option value="team_parent">Team Parent</option>
-            <option value="coach">Coach</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Team
-          </label>
-          <select
-            value={formData.teamId}
-            onChange={(e) => setFormData({...formData, teamId: e.target.value})}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
-          >
-            <option value="">Select a team...</option>
-            {teams.map((team) => (
-              <option key={team.id} value={team.id}>
-                {team.name}
-              </option>
+      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:px-8">
+        <aside className="hidden lg:block">
+          <nav className="sticky top-24 space-y-1">
+            {adminNav.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`flex h-10 items-center gap-2 rounded-md px-3 text-sm font-bold ${
+                  item.href === '/admin'
+                    ? 'bg-falcon-700 text-white'
+                    : 'text-ink-700 hover:bg-white hover:text-ink-950'
+                }`}
+              >
+                <item.icon size={16} />
+                {item.label}
+              </Link>
             ))}
-          </select>
-          {/* Debug info */}
-          <div className="mt-1 text-xs text-gray-500">
-            Debug: Found {teams.length} teams
-            {teams.length > 0 && `: ${teams.map(t => t.name).join(', ')}`}
-          </div>
-        </div>
-      </div>
+          </nav>
+        </aside>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Personal Message (Optional)
-        </label>
-        <textarea
-          value={formData.message}
-          onChange={(e) => setFormData({...formData, message: e.target.value})}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          rows={3}
-          placeholder="Welcome to the Woodinville Falcons Football team..."
-        />
-      </div>
-
-      <div className="flex gap-3">
-        <Button
-          type="submit"
-          disabled={loading}
-          className="falcons-button"
-        >
-          {loading ? 'Creating...' : 'Create Invitation'}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-        >
-          Cancel
-        </Button>
-      </div>
-    </form>
-  )
-}
-
-function InvitationCard({
-  invitation,
-  onRevoke
-}: {
-  invitation: Invitation
-  onRevoke: () => void
-}) {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800'
-      case 'accepted': return 'bg-green-100 text-green-800'
-      case 'expired': return 'bg-gray-100 text-gray-800'
-      case 'revoked': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
-    }
-  }
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'pending': return <Clock size={16} />
-      case 'accepted': return <CheckCircle size={16} />
-      case 'expired': return <XCircle size={16} />
-      case 'revoked': return <XCircle size={16} />
-      default: return <Clock size={16} />
-    }
-  }
-
-  return (
-    <div className="border border-gray-200 rounded-lg p-4">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <h3 className="font-semibold text-gray-900">
-              {invitation.full_name || invitation.email}
-            </h3>
-            <Badge className={getStatusColor(invitation.status)}>
-              {getStatusIcon(invitation.status)}
-              <span className="ml-1">{invitation.status}</span>
-            </Badge>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+        <main className="space-y-6">
+          <section className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <span className="font-medium">Email:</span> {invitation.email}
-            </div>
-            <div>
-              <span className="font-medium">Role:</span> {invitation.role.replace('_', ' ')}
-            </div>
-            <div>
-              <span className="font-medium">Team:</span> {invitation.team_name}
-            </div>
-          </div>
-
-          <div className="mt-2 text-sm text-gray-600">
-            <div>
-              <span className="font-medium">Code:</span> 
-              <code className="ml-1 bg-gray-100 px-2 py-1 rounded">{invitation.code}</code>
-            </div>
-            <div className="mt-1">
-              <span className="font-medium">Expires:</span> {new Date(invitation.expires_at).toLocaleDateString()}
-            </div>
-            {invitation.message && (
-              <div className="mt-2">
-                <span className="font-medium">Message:</span> {invitation.message}
+              <div className="mb-2 flex flex-wrap items-center gap-2">
+                <Badge variant="warning">Draft waiting</Badge>
+                <Badge variant="destructive">2 urgent gaps</Badge>
               </div>
-            )}
-          </div>
-        </div>
+              <h1 className="text-3xl font-bold leading-9 text-ink-950">Admin Dashboard</h1>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-600">
+                Review what needs attention before families receive the next Weekly Huddle.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline">
+                <Send size={16} className="mr-2" />
+                Quick Alert
+              </Button>
+              <Link href="/admin/huddles/new">
+                <Button>
+                  <Edit3 size={16} className="mr-2" />
+                  Edit Huddle
+                </Button>
+              </Link>
+            </div>
+          </section>
 
-        {invitation.status === 'pending' && (
-          <div className="ml-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onRevoke}
-              className="text-red-600 border-red-600 hover:bg-red-50"
-            >
-              Revoke
-            </Button>
-          </div>
-        )}
+          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {metrics.map((metric) => (
+              <Card key={metric.label}>
+                <CardContent className="pt-4 sm:pt-5">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <p className="text-sm font-bold text-ink-600">{metric.label}</p>
+                    <Badge variant={metricBadge(metric.tone) as any}>{metric.value}</Badge>
+                  </div>
+                  <p className="text-sm leading-5 text-ink-600">{metric.detail}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </section>
+
+          <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+            <Card>
+              <CardHeader className="flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Work queue</CardTitle>
+                  <p className="text-sm text-ink-600">Exceptions and gaps that need admin attention.</p>
+                </div>
+                <Button size="sm" variant="outline">View All</Button>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {queues.map((item) => (
+                  <div key={item.title} className="flex gap-3 rounded-lg border border-ink-200 p-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-ink-100 text-ink-700">
+                      <item.icon size={18} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h2 className="font-bold text-ink-950">{item.title}</h2>
+                        <Badge variant={item.tone}>{item.badge}</Badge>
+                      </div>
+                      <p className="mt-1 text-sm leading-5 text-ink-600">{item.detail}</p>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Current draft</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <p className="font-bold text-ink-950">Weekly Huddle | May 24-31</p>
+                    <p className="mt-1 text-sm text-ink-600">4 sections drafted, 2 warnings before publish.</p>
+                  </div>
+                  <div className="rounded-lg bg-gold-100 p-3 text-sm leading-6 text-amber-950">
+                    Add confirmed Spring Football times before publishing.
+                  </div>
+                  <Link href="/admin/huddles/new">
+                    <Button className="w-full">Continue Editing</Button>
+                  </Link>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Events needing details</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {eventsNeedingDetails.map((event) => (
+                    <div key={event} className="flex items-start gap-2 text-sm leading-5 text-ink-700">
+                      <AlertTriangle size={15} className="mt-0.5 shrink-0 text-gold-500" />
+                      <span>{event}</span>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+        </main>
       </div>
     </div>
   )

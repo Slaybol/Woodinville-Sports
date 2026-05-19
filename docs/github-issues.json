@@ -1,0 +1,227 @@
+{
+  "repository": "Slaybol/Woodinville-Sports",
+  "labels": [
+    { "name": "mvp", "color": "08743d", "description": "Required for the first usable MVP" },
+    { "name": "deferred", "color": "6b7280", "description": "Planned after MVP" },
+    { "name": "frontend", "color": "2563eb", "description": "Web or mobile user interface work" },
+    { "name": "backend", "color": "0a8a49", "description": "Server, database, or data access work" },
+    { "name": "database", "color": "064725", "description": "Supabase schema, SQL, seed data, or RLS work" },
+    { "name": "mobile", "color": "18a65b", "description": "Expo or mobile-specific work" },
+    { "name": "admin", "color": "d6a820", "description": "Coach, team parent, or FGIC admin workflow" },
+    { "name": "design-system", "color": "8b5cf6", "description": "Visual system, tokens, and shared UI components" },
+    { "name": "phase-0-reset", "color": "111827", "description": "Project reset and scope alignment" },
+    { "name": "phase-1-backend", "color": "064725", "description": "Data model and backend foundation" },
+    { "name": "phase-2-design-system", "color": "8b5cf6", "description": "App shell and UI foundation" },
+    { "name": "phase-3-auth", "color": "2563eb", "description": "Authentication and onboarding" },
+    { "name": "phase-4-parent-mvp", "color": "08743d", "description": "Parent and family MVP screens" },
+    { "name": "phase-5-admin-mvp", "color": "d6a820", "description": "Admin MVP screens" },
+    { "name": "phase-6-mobile-admin", "color": "18a65b", "description": "Mobile admin quick tools" },
+    { "name": "phase-7-notifications", "color": "dc2626", "description": "Notifications and preferences" },
+    { "name": "phase-8-release", "color": "374151", "description": "Quality and release readiness" }
+  ],
+  "milestones": [
+    "Phase 0 - Project Reset",
+    "Phase 1 - Data Model and Backend",
+    "Phase 2 - App Shell and Design System",
+    "Phase 3 - Auth and Onboarding",
+    "Phase 4 - Parent MVP Screens",
+    "Phase 5 - Admin MVP Screens",
+    "Phase 6 - Mobile Admin Quick Tools",
+    "Phase 7 - Notifications",
+    "Phase 8 - Quality and Release Readiness"
+  ],
+  "issues": [
+    {
+      "title": "Audit existing code and decide keep/remove/rewrite",
+      "milestone": "Phase 0 - Project Reset",
+      "labels": ["mvp", "phase-0-reset"],
+      "body": "## Goal\nDecide what to keep, remove, or rewrite from the existing prototype.\n\n## Tasks\n- [ ] Review existing web routes\n- [ ] Review existing mobile routes\n- [ ] Review shared package\n- [ ] Review Supabase schema files\n- [ ] Identify mock-data-only screens\n- [ ] Identify reusable UI primitives\n- [ ] Identify auth code that can be kept\n\n## Acceptance Criteria\n- [ ] Short keep/remove/rewrite list exists\n- [ ] No code is deleted until replacement direction is clear"
+    },
+    {
+      "title": "Define MVP scope and deferred features",
+      "milestone": "Phase 0 - Project Reset",
+      "labels": ["mvp", "phase-0-reset"],
+      "body": "## Goal\nLock the first build target.\n\n## Tasks\n- [ ] Confirm MVP screen list\n- [ ] Confirm non-MVP features\n- [ ] Confirm roles and permissions\n- [ ] Confirm whether mobile admin quick tools are included in MVP\n\n## Acceptance Criteria\n- [ ] MVP scope is documented\n- [ ] Deferred features are documented"
+    },
+    {
+      "title": "Design new Supabase schema",
+      "milestone": "Phase 1 - Data Model and Backend",
+      "labels": ["mvp", "phase-1-backend", "backend", "database"],
+      "body": "## Goal\nCreate a schema centered on huddles, action items, families, events, and volunteering.\n\n## Tables\n- [ ] profiles\n- [ ] families\n- [ ] family_members\n- [ ] players\n- [ ] teams\n- [ ] team_members\n- [ ] huddles\n- [ ] huddle_sections\n- [ ] action_items\n- [ ] family_action_status\n- [ ] events\n- [ ] volunteer_slots\n- [ ] volunteer_signups\n- [ ] documents\n- [ ] notifications\n\n## Acceptance Criteria\n- [ ] SQL migration exists\n- [ ] Tables have clear ownership and relationships\n- [ ] Important enums/check constraints are defined\n- [ ] Created/updated timestamps are consistent"
+    },
+    {
+      "title": "Add Supabase Row Level Security policies",
+      "milestone": "Phase 1 - Data Model and Backend",
+      "labels": ["mvp", "phase-1-backend", "backend", "database"],
+      "body": "## Goal\nEnforce permissions at the database layer.\n\n## Tasks\n- [ ] Define parent/family read access\n- [ ] Define coach/team parent permissions\n- [ ] Define FGIC admin permissions\n- [ ] Lock down admin-only tables and writes\n- [ ] Add policies for huddles, actions, events, volunteer slots, and family records\n\n## Acceptance Criteria\n- [ ] Parents can only see relevant family/team data\n- [ ] Admin roles can manage appropriate program data\n- [ ] No admin-only permission depends only on client-side checks"
+    },
+    {
+      "title": "Add realistic seed data",
+      "milestone": "Phase 1 - Data Model and Backend",
+      "labels": ["mvp", "phase-1-backend", "backend", "database"],
+      "body": "## Goal\nMake local development and demos realistic.\n\n## Seed Examples\n- [ ] Varsity, JV, C-Team\n- [ ] A current Weekly Huddle\n- [ ] FinalForms action item\n- [ ] CWU Camp action item\n- [ ] FGIC membership action item\n- [ ] A week of events\n- [ ] Volunteer opportunities\n- [ ] Sample family and player records\n\n## Acceptance Criteria\n- [ ] New developer can seed a useful demo state\n- [ ] Demo data matches the product language in the design docs"
+    },
+    {
+      "title": "Add shared domain and database types",
+      "milestone": "Phase 1 - Data Model and Backend",
+      "labels": ["mvp", "phase-1-backend", "backend"],
+      "body": "## Goal\nKeep web, mobile, and backend contracts aligned.\n\n## Tasks\n- [ ] Generate or define database types\n- [ ] Add domain types for huddles, actions, events, volunteer slots, profiles\n- [ ] Add status enums\n- [ ] Add lightweight validation helpers if needed\n\n## Acceptance Criteria\n- [ ] Shared package exports useful typed models\n- [ ] Web app imports shared types where appropriate"
+    },
+    {
+      "title": "Implement Tailwind theme tokens",
+      "milestone": "Phase 2 - App Shell and Design System",
+      "labels": ["mvp", "phase-2-design-system", "frontend", "design-system"],
+      "body": "## Goal\nTranslate design tokens into usable code.\n\n## Tasks\n- [ ] Add color tokens\n- [ ] Add typography scale\n- [ ] Add spacing/radius defaults\n- [ ] Define semantic utility classes if useful\n\n## Acceptance Criteria\n- [ ] UI uses the documented token palette\n- [ ] No old one-off theme colors dominate the app"
+    },
+    {
+      "title": "Build core UI components",
+      "milestone": "Phase 2 - App Shell and Design System",
+      "labels": ["mvp", "phase-2-design-system", "frontend", "design-system"],
+      "body": "## Goal\nCreate the small component set needed for MVP screens.\n\n## Components\n- [ ] App header\n- [ ] Mobile bottom nav\n- [ ] Button variants\n- [ ] Input/select/textarea\n- [ ] Card\n- [ ] Badge\n- [ ] Status pill\n- [ ] List row\n- [ ] Empty state\n- [ ] Loading state\n- [ ] Error state\n- [ ] Page section\n\n## Acceptance Criteria\n- [ ] Components match the design-system sizing\n- [ ] Components are reusable across parent and admin screens\n- [ ] No nested card pattern is introduced"
+    },
+    {
+      "title": "Build parent, admin, and auth layout shells",
+      "milestone": "Phase 2 - App Shell and Design System",
+      "labels": ["mvp", "phase-2-design-system", "frontend", "design-system"],
+      "body": "## Goal\nSupport parent and admin navigation cleanly.\n\n## Tasks\n- [ ] Parent shell\n- [ ] Admin shell\n- [ ] Auth shell\n- [ ] Responsive desktop content width\n- [ ] Mobile bottom navigation\n\n## Acceptance Criteria\n- [ ] Parent screens share consistent navigation\n- [ ] Admin screens share consistent navigation\n- [ ] Mobile layouts have stable tap targets"
+    },
+    {
+      "title": "Build Sign In / Invite screen",
+      "milestone": "Phase 3 - Auth and Onboarding",
+      "labels": ["mvp", "phase-3-auth", "frontend", "backend"],
+      "body": "## Goal\nLet users sign in or accept an invitation.\n\n## Tasks\n- [ ] Email/password sign in\n- [ ] Invitation code path\n- [ ] Forgot password entry point\n- [ ] Basic error states\n- [ ] Loading states\n\n## Acceptance Criteria\n- [ ] Existing users can sign in\n- [ ] Invited users can begin account setup\n- [ ] Errors are understandable"
+    },
+    {
+      "title": "Build Family Setup flow",
+      "milestone": "Phase 3 - Auth and Onboarding",
+      "labels": ["mvp", "phase-3-auth", "frontend", "backend"],
+      "body": "## Goal\nConnect an account to a family/player/team context.\n\n## Tasks\n- [ ] Create or join family\n- [ ] Link player records\n- [ ] Assign team\n- [ ] Capture contact info\n- [ ] Set notification preferences\n\n## Acceptance Criteria\n- [ ] Parent account has a usable family context\n- [ ] User lands on Huddle Home after setup"
+    },
+    {
+      "title": "Build Huddle Home",
+      "milestone": "Phase 4 - Parent MVP Screens",
+      "labels": ["mvp", "phase-4-parent-mvp", "frontend"],
+      "body": "## Goal\nShow the current week and the most important family information.\n\n## Tasks\n- [ ] Current huddle header\n- [ ] Urgent alert section\n- [ ] Due-soon action summary\n- [ ] This week schedule preview\n- [ ] Volunteer needs preview\n- [ ] Highlights section\n- [ ] Empty state when no huddle is published\n\n## Acceptance Criteria\n- [ ] Parent can understand this week's priorities in under 30 seconds\n- [ ] Urgent and due-soon items appear before normal content"
+    },
+    {
+      "title": "Build Action Center",
+      "milestone": "Phase 4 - Parent MVP Screens",
+      "labels": ["mvp", "phase-4-parent-mvp", "frontend"],
+      "body": "## Goal\nShow required, optional, and completed family tasks.\n\n## Tasks\n- [ ] Completion summary\n- [ ] Status filters\n- [ ] Action rows\n- [ ] Due date badges\n- [ ] External link handling\n- [ ] Mark complete where allowed\n\n## Acceptance Criteria\n- [ ] Parent can identify incomplete required items\n- [ ] Deadlines are shown as absolute dates\n- [ ] External resources are clearly labeled"
+    },
+    {
+      "title": "Build Calendar agenda",
+      "milestone": "Phase 4 - Parent MVP Screens",
+      "labels": ["mvp", "phase-4-parent-mvp", "frontend"],
+      "body": "## Goal\nShow a trusted agenda of events and deadlines.\n\n## Tasks\n- [ ] Week agenda view\n- [ ] Team filter\n- [ ] Event type filter\n- [ ] Date dividers\n- [ ] Event rows\n- [ ] Last-updated indicator\n\n## Acceptance Criteria\n- [ ] Parent can find upcoming practices, games, camps, meetings, and deadlines\n- [ ] Events link to detail pages"
+    },
+    {
+      "title": "Build Event Detail screen",
+      "milestone": "Phase 4 - Parent MVP Screens",
+      "labels": ["mvp", "phase-4-parent-mvp", "frontend"],
+      "body": "## Goal\nAnswer event logistics without digging through email.\n\n## Tasks\n- [ ] Event header\n- [ ] Date/time\n- [ ] Arrival or bus time\n- [ ] Location/address\n- [ ] Uniform/equipment notes\n- [ ] Team audience\n- [ ] Related links\n- [ ] Last-updated timestamp\n\n## Acceptance Criteria\n- [ ] Parent can answer where, when, what to bring, and who it applies to"
+    },
+    {
+      "title": "Build Volunteer screen",
+      "milestone": "Phase 4 - Parent MVP Screens",
+      "labels": ["mvp", "phase-4-parent-mvp", "frontend"],
+      "body": "## Goal\nShow open volunteer work and family progress.\n\n## Tasks\n- [ ] Hour progress\n- [ ] Open slots\n- [ ] Claimed shifts\n- [ ] Slot detail\n- [ ] Sign up\n- [ ] Cancel signup if allowed\n\n## Acceptance Criteria\n- [ ] Parent can claim an open volunteer slot\n- [ ] Family hour progress updates or is clearly represented"
+    },
+    {
+      "title": "Build Family Profile screen",
+      "milestone": "Phase 4 - Parent MVP Screens",
+      "labels": ["mvp", "phase-4-parent-mvp", "frontend"],
+      "body": "## Goal\nManage family, players, contacts, and preferences.\n\n## Tasks\n- [ ] Parent/guardian contact info\n- [ ] Linked players\n- [ ] Team assignments\n- [ ] Emergency contacts\n- [ ] Notification preferences\n- [ ] Checklist summary\n\n## Acceptance Criteria\n- [ ] Parent can confirm their family/player context\n- [ ] Notification preferences can be reviewed or edited"
+    },
+    {
+      "title": "Build Admin Dashboard",
+      "milestone": "Phase 5 - Admin MVP Screens",
+      "labels": ["mvp", "phase-5-admin-mvp", "frontend", "admin"],
+      "body": "## Goal\nShow what needs admin attention.\n\n## Tasks\n- [ ] Current huddle status\n- [ ] Action completion summary\n- [ ] Volunteer gaps\n- [ ] Upcoming event issues\n- [ ] Families missing setup\n- [ ] Quick create buttons\n\n## Acceptance Criteria\n- [ ] Admin can see operational exceptions first\n- [ ] Admin can navigate to the right management screen quickly"
+    },
+    {
+      "title": "Build Huddle Editor",
+      "milestone": "Phase 5 - Admin MVP Screens",
+      "labels": ["mvp", "phase-5-admin-mvp", "frontend", "admin"],
+      "body": "## Goal\nCreate and publish structured Weekly Huddles.\n\n## Tasks\n- [ ] Date range\n- [ ] Summary\n- [ ] Urgent items\n- [ ] Action item links\n- [ ] Calendar highlights\n- [ ] Volunteer asks\n- [ ] Program highlights\n- [ ] Audience targeting\n- [ ] Save draft\n- [ ] Publish huddle\n- [ ] Preview panel on desktop\n\n## Acceptance Criteria\n- [ ] Admin can draft and publish a current Weekly Huddle\n- [ ] Parent Huddle Home updates from published content"
+    },
+    {
+      "title": "Build Action Item Manager",
+      "milestone": "Phase 5 - Admin MVP Screens",
+      "labels": ["mvp", "phase-5-admin-mvp", "frontend", "admin"],
+      "body": "## Goal\nCreate and manage family checklist items.\n\n## Tasks\n- [ ] Create action item\n- [ ] Set due date\n- [ ] Set audience\n- [ ] Attach external link\n- [ ] Track status summary\n- [ ] Mark complete/waived for families if permitted\n\n## Acceptance Criteria\n- [ ] Admin can create an action item that appears in parent Action Center"
+    },
+    {
+      "title": "Build Calendar/Event Manager",
+      "milestone": "Phase 5 - Admin MVP Screens",
+      "labels": ["mvp", "phase-5-admin-mvp", "frontend", "admin"],
+      "body": "## Goal\nMaintain trusted schedule information.\n\n## Tasks\n- [ ] Create event\n- [ ] Edit event\n- [ ] Set team/audience\n- [ ] Set event type\n- [ ] Add arrival/bus/uniform notes\n- [ ] Mark cancellation or update\n\n## Acceptance Criteria\n- [ ] Admin-created events appear in Calendar and Event Detail"
+    },
+    {
+      "title": "Build Volunteer Manager",
+      "milestone": "Phase 5 - Admin MVP Screens",
+      "labels": ["mvp", "phase-5-admin-mvp", "frontend", "admin"],
+      "body": "## Goal\nManage volunteer slots and gaps.\n\n## Tasks\n- [ ] Create slot\n- [ ] Set date/time/location\n- [ ] Set slots needed\n- [ ] Set hour credit\n- [ ] View signups\n- [ ] Identify unfilled needs\n\n## Acceptance Criteria\n- [ ] Admin-created volunteer slots appear in parent Volunteer screen"
+    },
+    {
+      "title": "Build Mobile Admin Home",
+      "milestone": "Phase 6 - Mobile Admin Quick Tools",
+      "labels": ["deferred", "phase-6-mobile-admin", "frontend", "mobile", "admin"],
+      "body": "## Goal\nShow quick admin work queues on a phone.\n\n## Tasks\n- [ ] Current huddle status\n- [ ] Volunteer gaps\n- [ ] Families missing setup\n- [ ] Upcoming events\n- [ ] Quick alert button\n\n## Acceptance Criteria\n- [ ] Admin can triage the program from mobile"
+    },
+    {
+      "title": "Build Quick Alert mobile flow",
+      "milestone": "Phase 6 - Mobile Admin Quick Tools",
+      "labels": ["deferred", "phase-6-mobile-admin", "frontend", "mobile", "admin"],
+      "body": "## Goal\nSend urgent targeted messages from a phone.\n\n## Tasks\n- [ ] Message composer\n- [ ] Audience selector\n- [ ] Urgency toggle\n- [ ] Send confirmation\n\n## Acceptance Criteria\n- [ ] Admin can send an urgent update without desktop access"
+    },
+    {
+      "title": "Build Quick Event Update mobile flow",
+      "milestone": "Phase 6 - Mobile Admin Quick Tools",
+      "labels": ["deferred", "phase-6-mobile-admin", "frontend", "mobile", "admin"],
+      "body": "## Goal\nUpdate logistics from the field.\n\n## Tasks\n- [ ] Select event\n- [ ] Edit arrival/bus time\n- [ ] Edit location\n- [ ] Edit uniform/equipment notes\n- [ ] Save update\n\n## Acceptance Criteria\n- [ ] Admin can update event logistics quickly from mobile"
+    },
+    {
+      "title": "Build Huddle Review mobile flow",
+      "milestone": "Phase 6 - Mobile Admin Quick Tools",
+      "labels": ["deferred", "phase-6-mobile-admin", "frontend", "mobile", "admin"],
+      "body": "## Goal\nPreview and publish a draft from mobile.\n\n## Tasks\n- [ ] Show current draft\n- [ ] Show target audience\n- [ ] Publish button\n- [ ] Basic validation warnings\n\n## Acceptance Criteria\n- [ ] Admin can review and publish, but heavy editing remains desktop-first"
+    },
+    {
+      "title": "Build notification preferences",
+      "milestone": "Phase 7 - Notifications",
+      "labels": ["deferred", "phase-7-notifications", "frontend", "backend"],
+      "body": "## Goal\nLet families control notification categories.\n\n## Categories\n- [ ] Urgent alerts\n- [ ] Weekly Huddle published\n- [ ] Action item due soon\n- [ ] Event updates\n- [ ] Volunteer reminders\n\n## Acceptance Criteria\n- [ ] Preferences are saved per profile or family member"
+    },
+    {
+      "title": "Build notification delivery foundation",
+      "milestone": "Phase 7 - Notifications",
+      "labels": ["deferred", "phase-7-notifications", "backend"],
+      "body": "## Goal\nNotify families when important changes happen.\n\n## Channels\n- [ ] In-app notifications\n- [ ] Email later if needed\n- [ ] Push notifications for mobile later\n\n## Acceptance Criteria\n- [ ] Publishing a huddle can create in-app notifications\n- [ ] Urgent alerts can be surfaced prominently"
+    },
+    {
+      "title": "Accessibility review and fixes",
+      "milestone": "Phase 8 - Quality and Release Readiness",
+      "labels": ["mvp", "phase-8-release", "frontend"],
+      "body": "## Tasks\n- [ ] Keyboard navigation\n- [ ] Focus states\n- [ ] Color contrast\n- [ ] Form labels\n- [ ] Screen reader labels for icons\n\n## Acceptance Criteria\n- [ ] Core flows are usable without a mouse\n- [ ] Color is not the only indicator of status"
+    },
+    {
+      "title": "Responsive QA pass",
+      "milestone": "Phase 8 - Quality and Release Readiness",
+      "labels": ["mvp", "phase-8-release", "frontend"],
+      "body": "## Tasks\n- [ ] Test mobile widths\n- [ ] Test tablet widths\n- [ ] Test desktop widths\n- [ ] Check text wrapping\n- [ ] Check bottom nav\n- [ ] Check admin tables/lists\n\n## Acceptance Criteria\n- [ ] No important text overlaps or escapes containers\n- [ ] Core actions remain reachable on mobile"
+    },
+    {
+      "title": "Security review",
+      "milestone": "Phase 8 - Quality and Release Readiness",
+      "labels": ["mvp", "phase-8-release", "backend", "database"],
+      "body": "## Tasks\n- [ ] Verify RLS policies\n- [ ] Verify admin route protection\n- [ ] Verify client-side role checks mirror database rules\n- [ ] Review invitation flow\n\n## Acceptance Criteria\n- [ ] Parent cannot access another family's private data\n- [ ] Non-admin cannot create or publish admin content"
+    },
+    {
+      "title": "Prepare demo release",
+      "milestone": "Phase 8 - Quality and Release Readiness",
+      "labels": ["mvp", "phase-8-release"],
+      "body": "## Tasks\n- [ ] Seed demo data\n- [ ] Run type checks\n- [ ] Run lint/build\n- [ ] Document setup\n- [ ] Create walkthrough script\n\n## Acceptance Criteria\n- [ ] App can be demoed end to end with realistic Woodinville Football data"
+    }
+  ]
+}
