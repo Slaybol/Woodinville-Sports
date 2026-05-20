@@ -23,6 +23,7 @@ import { Card, CardContent } from '@/components/ui/card'
 interface ActionCenterContentProps {
   model: ActionCenterModel
   preview?: boolean
+  onUpdateStatus?: (formData: FormData) => void | Promise<void>
   dataState?: {
     source: 'supabase' | 'demo'
     reason?: string
@@ -101,7 +102,7 @@ function importanceLabel(action: ActionItem) {
   return 'Info'
 }
 
-export function ActionCenterContent({ model, preview = false, dataState }: ActionCenterContentProps) {
+export function ActionCenterContent({ model, preview = false, onUpdateStatus, dataState }: ActionCenterContentProps) {
   const urgentCount = model.items.filter(({ action, status }) => isUrgent(action, status.status)).length
   const dueSoonCount = model.items.filter(({ action, status }) => isDueSoon(action, status.status)).length
   const percent =
@@ -205,18 +206,35 @@ export function ActionCenterContent({ model, preview = false, dataState }: Actio
                       <span>{action.audience_label}</span>
                     </div>
                   </div>
-                  {action.external_url ? (
-                    <a href={action.external_url} target="_blank" rel="noreferrer">
-                      <Button variant={status.status === 'complete' ? 'outline' : 'default'} size="sm" className="w-full md:w-auto">
-                        {status.status === 'complete' ? 'View' : 'Open'}
-                        <ExternalLink size={14} className="ml-2" />
+                  <div className="flex w-full flex-col gap-2 md:w-auto">
+                    {onUpdateStatus && !preview && (
+                      <form action={onUpdateStatus}>
+                        <input type="hidden" name="family_id" value={status.family_id} />
+                        <input type="hidden" name="action_item_id" value={action.id} />
+                        <input
+                          type="hidden"
+                          name="next_status"
+                          value={status.status === 'complete' ? 'not_started' : 'complete'}
+                        />
+                        <Button variant={status.status === 'complete' ? 'outline' : 'default'} size="sm" className="w-full md:w-auto">
+                          {status.status === 'complete' ? 'Mark Incomplete' : 'Mark Complete'}
+                        </Button>
+                      </form>
+                    )}
+
+                    {action.external_url ? (
+                      <a href={action.external_url} target="_blank" rel="noreferrer">
+                        <Button variant="outline" size="sm" className="w-full md:w-auto">
+                          Open Link
+                          <ExternalLink size={14} className="ml-2" />
+                        </Button>
+                      </a>
+                    ) : (
+                      <Button variant="outline" size="sm" className="w-full md:w-auto">
+                        View
                       </Button>
-                    </a>
-                  ) : (
-                    <Button variant="outline" size="sm" className="w-full md:w-auto">
-                      View
-                    </Button>
-                  )}
+                    )}
+                  </div>
                 </div>
               )
             })}

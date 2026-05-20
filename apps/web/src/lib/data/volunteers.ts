@@ -7,10 +7,14 @@ import type {
   VolunteerSlotWithSignupSummary,
 } from '@gridiron/shared'
 import { volunteerCenterDemo } from '@/lib/demo-data'
+import { resolveReadableFamily } from '@/lib/data/family'
 import { createClient } from '@/lib/supabase/server'
+import type { PublishedSectionContent } from '@/lib/data/events'
 
 export interface VolunteerCenterDataResult {
   model: VolunteerCenterModel
+  familyId?: string
+  publishedSection?: PublishedSectionContent
   source: 'supabase' | 'demo'
   reason?: string
 }
@@ -25,19 +29,21 @@ export async function getVolunteerCenterResult(): Promise<VolunteerCenterDataRes
 
     const [
       { data: slots, error: slotsError },
-      { data: family, error: familyError },
+      { data: publishedHuddle },
     ] = await Promise.all([
       supabase
         .from('volunteer_slots')
         .select('*')
         .order('starts_at', { ascending: true, nullsFirst: false }),
       supabase
-        .from('families')
-        .select('*')
-        .order('created_at', { ascending: true })
+        .from('huddles')
+        .select('id')
+        .eq('status', 'published')
+        .order('starts_on', { ascending: false, nullsFirst: false })
         .limit(1)
         .maybeSingle(),
     ])
+    const family = await resolveReadableFamily(supabase)
 
     if (slotsError || !slots || slots.length === 0) {
       return {
@@ -47,11 +53,11 @@ export async function getVolunteerCenterResult(): Promise<VolunteerCenterDataRes
       }
     }
 
-    if (familyError || !family) {
+    if (!family) {
       return {
         model: volunteerCenterDemo,
         source: 'demo',
-        reason: familyError?.message || 'No readable family row was available.',
+        reason: 'No readable family row was available.',
       }
     }
 
@@ -98,8 +104,28 @@ export async function getVolunteerCenterResult(): Promise<VolunteerCenterDataRes
 
     const volunteerHoursComplete = claimedShifts.reduce((total, shift) => total + shift.hours_credited, 0)
 
+    let publishedSection: PublishedSectionContent | undefined
+
+    if (publishedHuddle?.id) {
+      const { data: section } = await supabase
+        .from('huddle_sections')
+        .select('title, body')
+        .eq('huddle_id', publishedHuddle.id)
+        .eq('section_type', 'volunteer')
+        .maybeSingle()
+
+      if (section?.title || section?.body) {
+        publishedSection = {
+          title: section.title || 'Coordinator notes',
+          body: section.body || '',
+        }
+      }
+    }
+
     return {
       source: 'supabase',
+      familyId: typedFamily.id,
+      publishedSection,
       model: {
         slots: slotsWithSummary,
         claimed_shifts: claimedShifts.length > 0 ? claimedShifts : volunteerCenterDemo.claimed_shifts,

@@ -36,7 +36,7 @@ export default async function VolunteerPreviewPage() {
         </div>
       )}
 
-      <VolunteerContent model={volunteerCenter.model} preview />
+      <VolunteerContent model={volunteerCenter.model} publishedSection={volunteerCenter.publishedSection} preview />
     </div>
   )
 }

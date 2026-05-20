@@ -1,5 +1,6 @@
-import type { ActionItem, CalendarEvent, Huddle, HuddleHomeModel, HuddleSection, VolunteerSlot } from '@gridiron/shared'
+import type { ActionItem, CalendarEvent, Huddle, HuddleHomeModel, HuddleSection, VolunteerSignup, VolunteerSlot } from '@gridiron/shared'
 import { demoFamilyProgress, huddleHomeDemo } from '@/lib/demo-data'
+import { buildFamilyProgressSummary, resolveReadableFamily } from '@/lib/data/family'
 import { createClient } from '@/lib/supabase/server'
 
 export interface HuddleHomeDataResult {
@@ -70,6 +71,31 @@ export async function getCurrentHuddleHomeResult(): Promise<HuddleHomeDataResult
     }
 
     const actionItems = (actions || []) as ActionItem[]
+    const family = await resolveReadableFamily(supabase)
+    let familyProgress = demoFamilyProgress
+
+    if (family) {
+      const [{ data: statuses }, { data: volunteerSignups }] = await Promise.all([
+        supabase.from('family_action_status').select('*').eq('family_id', family.id),
+        supabase
+          .from('volunteer_signups')
+          .select('*')
+          .eq('family_id', family.id)
+          .eq('status', 'confirmed'),
+      ])
+
+      const completeCount = actionItems.filter((action) => {
+        const matched = (statuses || []).find((status) => status.action_item_id === action.id)
+        return matched?.status === 'complete'
+      }).length
+
+      familyProgress = buildFamilyProgressSummary({
+        actionItemsComplete: completeCount,
+        actionItemsTotal: actionItems.length,
+        volunteerSignups: (volunteerSignups || []) as VolunteerSignup[],
+        volunteerHoursGoal: demoFamilyProgress.volunteer_hours_goal,
+      })
+    }
 
     return {
       source: 'supabase',
@@ -80,7 +106,7 @@ export async function getCurrentHuddleHomeResult(): Promise<HuddleHomeDataResult
         due_soon_actions: actionItems,
         upcoming_events: (events || []) as CalendarEvent[],
         volunteer_needs: (volunteerSlots || []) as VolunteerSlot[],
-        family_progress: demoFamilyProgress,
+        family_progress: familyProgress,
       },
     }
   } catch {

@@ -22,6 +22,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface CalendarContentProps {
   events: CalendarEvent[]
+  publishedSection?: {
+    title: string
+    body: string
+  }
   dataState?: {
     source: 'supabase' | 'demo'
     reason?: string
@@ -77,7 +81,7 @@ function dayLabel(event: CalendarEvent) {
   return 'Date'
 }
 
-export function CalendarContent({ events, dataState }: CalendarContentProps) {
+export function CalendarContent({ events, publishedSection, dataState }: CalendarContentProps) {
   const featured = events.find((event) => event.event_type === 'camp') || events[0]
 
   return (
@@ -233,11 +237,12 @@ export function CalendarContent({ events, dataState }: CalendarContentProps) {
 
           <Card>
             <CardHeader>
-              <CardTitle>Calendar note</CardTitle>
+              <CardTitle>{publishedSection?.title || 'Calendar note'}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm leading-6 text-ink-600">
-                The coach calendar will continue to change throughout the season. Use the digital version as the source of truth.
+                {publishedSection?.body ||
+                  'The coach calendar will continue to change throughout the season. Use the digital version as the source of truth.'}
               </p>
               <div className="mt-4 rounded-lg border border-ink-200 p-3 text-sm">
                 <p className="font-bold text-ink-950">Suggested travel window</p>

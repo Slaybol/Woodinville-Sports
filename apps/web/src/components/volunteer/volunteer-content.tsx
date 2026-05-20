@@ -22,6 +22,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 interface VolunteerContentProps {
   model: VolunteerCenterModel
   preview?: boolean
+  familyId?: string
+  onToggleSignup?: (formData: FormData) => void | Promise<void>
+  publishedSection?: {
+    title: string
+    body: string
+  }
   dataState?: {
     source: 'supabase' | 'demo'
     reason?: string
@@ -57,7 +63,14 @@ function categoryLabel(category: VolunteerCategory) {
   }
 }
 
-export function VolunteerContent({ model, preview = false, dataState }: VolunteerContentProps) {
+export function VolunteerContent({
+  model,
+  preview = false,
+  familyId,
+  onToggleSignup,
+  publishedSection,
+  dataState,
+}: VolunteerContentProps) {
   const remaining = Math.max(model.volunteer_hours_goal - model.volunteer_hours_complete, 0)
   const percent =
     model.volunteer_hours_goal === 0
@@ -148,6 +161,7 @@ export function VolunteerContent({ model, preview = false, dataState }: Voluntee
             <CardContent className="space-y-3">
               {model.slots.map((slot) => {
                 const openSlots = Math.max(slot.slots_needed - slot.slots_filled, 0)
+                const isSignedUp = familyId ? slot.signed_up_family_ids.includes(familyId) : false
 
                 return (
                   <div key={slot.id} className="rounded-lg border border-ink-200 p-3">
@@ -162,7 +176,19 @@ export function VolunteerContent({ model, preview = false, dataState }: Voluntee
                           <p className="mt-1 text-sm leading-5 text-ink-600">{slot.description}</p>
                         )}
                       </div>
-                      <Button size="sm" className="w-full md:w-auto">Sign Up</Button>
+                      {onToggleSignup && familyId && !preview ? (
+                        <form action={onToggleSignup}>
+                          <input type="hidden" name="family_id" value={familyId} />
+                          <input type="hidden" name="slot_id" value={slot.id} />
+                          <input type="hidden" name="hours_credited" value={slot.hour_credit} />
+                          <input type="hidden" name="action_type" value={isSignedUp ? 'cancel' : 'signup'} />
+                          <Button size="sm" variant={isSignedUp ? 'outline' : 'default'} className="w-full md:w-auto">
+                            {isSignedUp ? 'Cancel' : 'Sign Up'}
+                          </Button>
+                        </form>
+                      ) : (
+                        <Button size="sm" className="w-full md:w-auto">Sign Up</Button>
+                      )}
                     </div>
 
                     <div className="mt-3 grid gap-2 text-sm text-ink-600 sm:grid-cols-2 lg:grid-cols-4">
@@ -212,11 +238,11 @@ export function VolunteerContent({ model, preview = false, dataState }: Voluntee
 
           <Card>
             <CardHeader>
-              <CardTitle>Coordinator notes</CardTitle>
+              <CardTitle>{publishedSection?.title || 'Coordinator notes'}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm leading-6 text-ink-600">
               <p>
-                Volunteer needs will grow as spring football, camp, and game day planning get closer.
+                {publishedSection?.body || 'Volunteer needs will grow as spring football, camp, and game day planning get closer.'}
               </p>
               <div className="rounded-lg bg-falcon-50 p-3 text-falcon-950">
                 <div className="mb-1 flex items-center gap-2 font-bold">

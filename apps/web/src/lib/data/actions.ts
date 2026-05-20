@@ -1,5 +1,6 @@
 import type { ActionCenterModel, ActionItem, Family, FamilyActionStatus, FamilyProgressSummary } from '@gridiron/shared'
 import { actionCenterDemo } from '@/lib/demo-data'
+import { buildFamilyProgressSummary, resolveReadableFamily } from '@/lib/data/family'
 import { createClient } from '@/lib/supabase/server'
 
 export interface ActionCenterDataResult {
@@ -8,13 +9,13 @@ export interface ActionCenterDataResult {
   reason?: string
 }
 
-function buildProgress(statuses: FamilyActionStatus[]): FamilyProgressSummary {
-  return {
-    action_items_complete: statuses.filter((status) => status.status === 'complete').length,
-    action_items_total: statuses.length,
-    volunteer_hours_complete: actionCenterDemo.progress.volunteer_hours_complete,
-    volunteer_hours_goal: actionCenterDemo.progress.volunteer_hours_goal,
-  }
+function buildProgress(statuses: FamilyActionStatus[], volunteerSignups: any[] = []): FamilyProgressSummary {
+  return buildFamilyProgressSummary({
+    actionItemsComplete: statuses.filter((status) => status.status === 'complete').length,
+    actionItemsTotal: statuses.length,
+    volunteerSignups,
+    volunteerHoursGoal: actionCenterDemo.progress.volunteer_hours_goal,
+  })
 }
 
 export async function getActionCenterResult(): Promise<ActionCenterDataResult> {
@@ -23,19 +24,13 @@ export async function getActionCenterResult(): Promise<ActionCenterDataResult> {
 
     const [
       { data: actions, error: actionsError },
-      { data: family, error: familyError },
     ] = await Promise.all([
       supabase
         .from('action_items')
         .select('*')
         .order('due_at', { ascending: true, nullsFirst: false }),
-      supabase
-        .from('families')
-        .select('*')
-        .order('created_at', { ascending: true })
-        .limit(1)
-        .maybeSingle(),
     ])
+    const family = await resolveReadableFamily(supabase)
 
     if (actionsError || !actions || actions.length === 0) {
       return {
@@ -45,11 +40,11 @@ export async function getActionCenterResult(): Promise<ActionCenterDataResult> {
       }
     }
 
-    if (familyError || !family) {
+    if (!family) {
       return {
         model: actionCenterDemo,
         source: 'demo',
-        reason: familyError?.message || 'No readable family row was available.',
+        reason: 'No readable family row was available.',
       }
     }
 
@@ -69,6 +64,11 @@ export async function getActionCenterResult(): Promise<ActionCenterDataResult> {
     const typedActions = actions as ActionItem[]
     const typedFamily = family as Family
     const typedStatuses = (statuses || []) as FamilyActionStatus[]
+    const { data: volunteerSignups } = await supabase
+      .from('volunteer_signups')
+      .select('*')
+      .eq('family_id', family.id)
+      .eq('status', 'confirmed')
 
     const mergedItems = typedActions.map((action) => {
       const matchedStatus = typedStatuses.find((status) => status.action_item_id === action.id)
@@ -96,7 +96,7 @@ export async function getActionCenterResult(): Promise<ActionCenterDataResult> {
       model: {
         family: typedFamily,
         items: mergedItems,
-        progress: buildProgress(mergedItems.map((item) => item.status)),
+        progress: buildProgress(mergedItems.map((item) => item.status), volunteerSignups || []),
       },
     }
   } catch {
