@@ -18,7 +18,7 @@ import type { ActionImportance } from '@gridiron/shared'
 import { demoTeams } from '@/lib/demo-data'
 import { createClient } from '@/lib/supabase/server'
 import { WoodinvilleLogo } from '@/components/branding/woodinville-logo'
-import { Badge } from '@/components/ui/badge'
+import { Badge, type BadgeProps } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { publishHuddle, saveDraftHuddle } from './actions'
@@ -81,8 +81,28 @@ const defaultDraftActions = [
   },
 ]
 
-function statusVariant(status: string) {
+function statusVariant(status: string): NonNullable<BadgeProps['variant']> {
   return status === 'Ready' ? 'success' : 'warning'
+}
+
+interface DraftActionRow {
+  id: string
+  title: string
+  description?: string | null
+  importance: ActionImportance
+  due_label?: string | null
+  audience_label?: string | null
+  external_url?: string | null
+}
+
+interface DraftSectionRow {
+  id: string
+  section_type: string
+  title?: string | null
+  body?: string | null
+  metadata?: {
+    highlights?: string[]
+  } | null
 }
 
 function statusTone(status?: string) {
@@ -119,14 +139,14 @@ export default async function HuddleEditorPage({
         .select('*')
         .eq('huddle_id', draft.id)
         .order('created_at', { ascending: true })
-    : { data: [] as any[] }
+    : { data: [] as DraftActionRow[] }
   const { data: draftSections } = draft
     ? await supabase
         .from('huddle_sections')
         .select('*')
         .eq('huddle_id', draft.id)
         .order('sort_order', { ascending: true })
-    : { data: [] as any[] }
+    : { data: [] as DraftSectionRow[] }
 
   const teamOptions =
     teams && teams.length > 0
@@ -312,7 +332,7 @@ export default async function HuddleEditorPage({
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <h2 className="font-bold text-ink-950">{section.label}</h2>
-                          <Badge variant={statusVariant(section.status) as any}>{section.status}</Badge>
+                          <Badge variant={statusVariant(section.status)}>{section.status}</Badge>
                         </div>
                         <div className="mt-3 space-y-3">
                           <label className="block space-y-1.5">

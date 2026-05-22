@@ -106,3 +106,332 @@ Import traces:
 https://nextjs.org/docs/messages/module-not-found
 
 
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./node_modules/next/node_modules/postcss/lib/input.js:6:18
+Module not found: Can't resolve 'nanoid/non-secure'
+
+
+Import trace:
+  postcss:
+    ./node_modules/next/node_modules/postcss/lib/input.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.js
+    ./node_modules/next/node_modules/postcss/lib/postcss.mjs
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ Found a change in next.config.mjs. Restarting the server to apply the changes...
+⚠ Fast Refresh had to perform a full reload when ./apps/web/src/contexts/auth-context.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./apps/web/src/contexts/auth-context.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./apps/web/src/lib/supabase/client.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload

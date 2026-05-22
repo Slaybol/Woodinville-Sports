@@ -1,11 +1,11 @@
-const path = require('path')
+import path from 'path'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ['@gridiron/shared'],
   turbopack: {
-    root: path.join(__dirname, '..', '..'),
+    root: path.join(process.cwd(), '..', '..'),
   },
 }
 
-module.exports = nextConfig
+export default nextConfig

@@ -1,21 +1,37 @@
 import type { Family, FamilyProgressSummary, VolunteerSignup } from '@gridiron/shared'
 
-interface SupabaseLike {
+interface SupabaseAuthLike {
   auth: {
     getUser: () => Promise<{ data: { user: { id: string } | null } }>
   }
+}
+
+interface QueryBuilder {
+  eq: (column: string, value: string) => QueryBuilder
+  order: (column: string, options: { ascending: boolean }) => QueryBuilder
+  limit: (count: number) => QueryBuilder
+  maybeSingle: () => Promise<{ data: unknown }>
+}
+
+interface SupabaseQueryLike {
   from: (table: string) => {
-    select: (columns: string) => any
+    select: (columns: string) => QueryBuilder
   }
 }
 
-export async function resolveReadableFamily(supabase: SupabaseLike): Promise<Family | null> {
+interface FamilyMembershipRow {
+  family_id?: string
+}
+
+export async function resolveReadableFamily(supabase: unknown): Promise<Family | null> {
+  const authClient = supabase as SupabaseAuthLike
+  const queryClient = supabase as SupabaseQueryLike
   const {
     data: { user },
-  } = await supabase.auth.getUser()
+  } = await authClient.auth.getUser()
 
   if (user?.id) {
-    const { data: membership } = await supabase
+    const { data: membership } = await queryClient
       .from('family_members')
       .select('family_id')
       .eq('profile_id', user.id)
@@ -23,11 +39,13 @@ export async function resolveReadableFamily(supabase: SupabaseLike): Promise<Fam
       .limit(1)
       .maybeSingle()
 
-    if (membership?.family_id) {
-      const { data: family } = await supabase
+    const membershipRow = membership as FamilyMembershipRow | null
+
+    if (membershipRow?.family_id) {
+      const { data: family } = await queryClient
         .from('families')
         .select('*')
-        .eq('id', membership.family_id)
+        .eq('id', membershipRow.family_id)
         .maybeSingle()
 
       if (family) {
@@ -35,7 +53,7 @@ export async function resolveReadableFamily(supabase: SupabaseLike): Promise<Fam
       }
     }
 
-    const { data: primaryContactFamily } = await supabase
+    const { data: primaryContactFamily } = await queryClient
       .from('families')
       .select('*')
       .eq('primary_contact_id', user.id)
@@ -50,7 +68,7 @@ export async function resolveReadableFamily(supabase: SupabaseLike): Promise<Fam
     return null
   }
 
-  const { data: fallbackFamily } = await supabase
+  const { data: fallbackFamily } = await queryClient
     .from('families')
     .select('*')
     .order('created_at', { ascending: true })

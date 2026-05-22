@@ -10,6 +10,8 @@
     "web": "npm run dev --workspace=@gridiron/web",
     "mobile": "npm run start --workspace=@gridiron/mobile",
     "build:web": "npm run build --workspace=@gridiron/web",
+    "test:web:unit": "npm run test:unit --workspace=@gridiron/web",
+    "test:web:e2e": "npm run test:e2e --workspace=@gridiron/web",
     "lint": "npm run lint --workspaces --if-present",
     "db:start": "npx supabase start",
     "db:stop": "npx supabase stop",

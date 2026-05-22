@@ -1,30 +1,20 @@
 'use client'
 
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { AuthShell } from '@/components/layout/auth-shell'
 import { Button } from '@/components/ui/button'
 
 function ResetPasswordForm() {
+  const searchParams = useSearchParams()
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState(() =>
+    searchParams.get('token') ? '' : 'Invalid reset link. Please request a new password reset email.'
+  )
   const [message, setMessage] = useState('')
-  const [mounted, setMounted] = useState(false)
   const router = useRouter()
-  const searchParams = useSearchParams()
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    const token = searchParams.get('token')
-    if (!token) {
-      setError('Invalid reset link. Please request a new password reset email.')
-    }
-  }, [searchParams])
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -44,8 +34,6 @@ function ResetPasswordForm() {
     }
 
     try {
-      if (!mounted) return
-
       const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
 
@@ -59,15 +47,11 @@ function ResetPasswordForm() {
       setTimeout(() => {
         router.push('/auth')
       }, 1800)
-    } catch (err: any) {
-      setError(err.message || 'An error occurred')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
     }
-  }
-
-  if (!mounted) {
-    return <div className="min-h-screen bg-ink-50" />
   }
 
   return (

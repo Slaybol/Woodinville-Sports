@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Pencil, Trash2, Users } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { AdminShell } from '@/components/layout/admin-shell'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

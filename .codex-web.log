@@ -452,3 +452,44 @@ Creating turbopack project {
  GET / 200 in 193ms (compile: 3ms, render: 189ms)
  GET / 200 in 132ms (compile: 4ms, render: 128ms)
  GET / 200 in 71ms (compile: 3ms, render: 67ms)
+ GET / 200 in 376ms (compile: 5ms, render: 372ms)
+ GET / 200 in 554ms (compile: 123ms, render: 432ms)
+✓ Compiled in 598ms
+ GET / 200 in 572ms (compile: 6ms, render: 566ms)
+ GET / 200 in 501ms (compile: 4ms, render: 498ms)
+ GET / 200 in 506ms (compile: 5ms, render: 501ms)
+ GET / 200 in 494ms (compile: 4ms, render: 490ms)
+ GET / 200 in 537ms (compile: 4ms, render: 533ms)
+ GET / 200 in 517ms (compile: 5ms, render: 511ms)
+ GET / 200 in 369ms (compile: 5ms, render: 364ms)
+ GET / 200 in 372ms (compile: 5ms, render: 367ms)
+ GET / 200 in 304ms (compile: 4ms, render: 300ms)
+ GET / 200 in 235ms (compile: 4ms, render: 231ms)
+ GET / 200 in 171ms (compile: 4ms, render: 167ms)
+ GET / 200 in 102ms (compile: 4ms, render: 97ms)
+ GET / 200 in 274ms (compile: 116ms, render: 157ms)
+ GET / 200 in 78ms (compile: 3ms, render: 75ms)
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://172.26.96.1:3000
+- Environments: .env.local
+
+✓ Starting...
+Creating turbopack project {
+  dir: 'C:\\Users\\tobys\\OneDrive\\Documents\\GitHub\\Woodinville-Sports\\apps\\web',
+  testMode: true
+}
+✓ Ready in 816ms
+ GET / 200 in 1130ms (compile: 393ms, render: 737ms)
+✓ Compiled in 23ms
+ GET / 200 in 462ms (compile: 73ms, render: 389ms)
+✓ Compiled in 8ms
+ GET / 200 in 390ms (compile: 56ms, render: 334ms)
+ GET / 200 in 138ms (compile: 59ms, render: 79ms)
+✓ Compiled in 57ms
+ GET / 200 in 234ms (compile: 74ms, render: 160ms)
+ GET / 200 in 136ms (compile: 61ms, render: 76ms)
+ GET / 200 in 135ms (compile: 54ms, render: 81ms)
+ GET / 200 in 136ms (compile: 62ms, render: 74ms)
+ GET / 200 in 223ms (compile: 57ms, render: 166ms)
+ GET / 200 in 391ms (compile: 5ms, render: 387ms)

@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   Clock,
   MapPin,
-  Plus,
   Utensils,
   Users,
 } from 'lucide-react'

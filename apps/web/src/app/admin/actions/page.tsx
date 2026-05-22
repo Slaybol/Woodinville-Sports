@@ -1,13 +1,13 @@
 import Link from 'next/link'
-import { ClipboardList, ExternalLink, Pencil, Trash2 } from 'lucide-react'
+import { ExternalLink, Pencil, Trash2 } from 'lucide-react'
 import { AdminShell } from '@/components/layout/admin-shell'
-import { Badge } from '@/components/ui/badge'
+import { Badge, type BadgeProps } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
 import { deleteActionItem, saveActionItem } from './actions'
 
-function toneForImportance(importance: string) {
+function toneForImportance(importance: string): NonNullable<BadgeProps['variant']> {
   if (importance === 'required') return 'destructive'
   if (importance === 'family') return 'warning'
   if (importance === 'info') return 'info'
@@ -162,7 +162,7 @@ export default async function AdminActionsPage({
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <h2 className="font-bold text-ink-950">{item.title}</h2>
-                        <Badge variant={toneForImportance(item.importance) as any}>{item.importance}</Badge>
+                        <Badge variant={toneForImportance(item.importance)}>{item.importance}</Badge>
                         {item.due_label && <Badge variant="outline">{item.due_label}</Badge>}
                       </div>
                       {item.description && <p className="mt-2 text-sm leading-6 text-ink-600">{item.description}</p>}

@@ -80,6 +80,12 @@ Expected jobs:
 - Coordinate events, meals, travel, and fundraisers
 - Manage invitations and family accounts
 
+Demo role split right now:
+
+- `parent`: family-facing app experience
+- `coach` and `team_parent`: admin web demo access at `/admin`
+- `player`: schema role exists, but no distinct player-specific app flow is being presented in the current demo
+
 ## Key Product Areas
 
 ### 1. Weekly Huddle

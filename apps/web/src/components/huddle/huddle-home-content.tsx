@@ -3,15 +3,12 @@
 import Link from 'next/link'
 import {
   AlertTriangle,
-  CalendarDays,
   ChevronRight,
   Clock,
   ExternalLink,
   MapPin,
   ShieldCheck,
   Trophy,
-  Users,
-  ClipboardList,
 } from 'lucide-react'
 import type { ActionItem, HuddleHomeModel } from '@gridiron/shared'
 import { Badge } from '@/components/ui/badge'

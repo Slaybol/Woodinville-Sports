@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 import {
   Bus,
@@ -11,7 +12,7 @@ import {
   CalendarDays,
 } from 'lucide-react'
 import type { CalendarEvent, CalendarEventType } from '@gridiron/shared'
-import { Badge } from '@/components/ui/badge'
+import { Badge, type BadgeProps } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -29,7 +30,7 @@ interface CalendarContentProps {
 
 const filters = ['All', 'Varsity', 'JV', 'C-Team', 'Deadlines']
 
-function eventBadge(type: CalendarEventType) {
+function eventBadge(type: CalendarEventType): NonNullable<BadgeProps['variant']> {
   if (type === 'deadline') return 'warning'
   if (type === 'camp') return 'info'
   if (type === 'practice') return 'success'
@@ -126,7 +127,7 @@ export function CalendarContent({ events, publishedSection, dataState }: Calenda
             </CardHeader>
             <CardContent className="space-y-3">
               {filteredEvents.map((event) => (
-                <a
+                <Link
                   key={event.id}
                   href={`/schedule/${event.id}`}
                   className="flex min-h-16 gap-3 rounded-lg border border-ink-200 p-3 transition-colors hover:bg-ink-50"
@@ -138,7 +139,7 @@ export function CalendarContent({ events, publishedSection, dataState }: Calenda
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h2 className="font-bold text-ink-950">{event.title}</h2>
-                      <Badge variant={eventBadge(event.event_type) as any}>{eventTypeLabel(event.event_type)}</Badge>
+                      <Badge variant={eventBadge(event.event_type)}>{eventTypeLabel(event.event_type)}</Badge>
                       <Badge variant="outline">{event.audience_label}</Badge>
                     </div>
                     <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-600">
@@ -153,7 +154,7 @@ export function CalendarContent({ events, publishedSection, dataState }: Calenda
                     </div>
                   </div>
                   <ChevronRight size={18} className="mt-1 shrink-0 text-ink-400" />
-                </a>
+                </Link>
               ))}
               {filteredEvents.length === 0 && (
                 <div className="rounded-lg border border-dashed border-ink-300 p-4 text-sm text-ink-600">
@@ -170,7 +171,7 @@ export function CalendarContent({ events, publishedSection, dataState }: Calenda
               <CardHeader>
                 <p className="brand-kicker">Featured event</p>
                 <div className="mb-1 flex flex-wrap items-center gap-2">
-                  <Badge variant={eventBadge(featured.event_type) as any}>{eventTypeLabel(featured.event_type)}</Badge>
+                  <Badge variant={eventBadge(featured.event_type)}>{eventTypeLabel(featured.event_type)}</Badge>
                   <Badge variant="outline">{featured.audience_label}</Badge>
                 </div>
                 <CardTitle className="mt-1">{featured.title}</CardTitle>

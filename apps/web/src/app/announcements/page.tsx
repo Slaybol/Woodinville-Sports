@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { 
   Bell, 
   ChevronLeft,
@@ -125,7 +126,7 @@ const reactionIcons = {
   pray: Smile,
 }
 
-function ReactionButtons({ announcementId, reactions }: { announcementId: string; reactions: Reaction[] }) {
+function ReactionButtons({ reactions }: { announcementId: string; reactions: Reaction[] }) {
   const [currentReactions, setCurrentReactions] = useState(reactions)
 
   const handleReaction = (reactionType: string) => {
@@ -165,7 +166,7 @@ function ReactionButtons({ announcementId, reactions }: { announcementId: string
   )
 }
 
-function CommentSection({ announcementId, comments }: { announcementId: string; comments: Comment[] }) {
+function CommentSection({ comments }: { announcementId: string; comments: Comment[] }) {
   const [showComments, setShowComments] = useState(false)
   const [newComment, setNewComment] = useState('')
   const [currentComments, setCurrentComments] = useState(comments)
@@ -238,10 +239,10 @@ export default function AnnouncementsPage() {
       <header className="falcons-header">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
-            <a href="/" className="flex items-center gap-2 hover:opacity-80 text-white/90 hover:text-white">
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80 text-white/90 hover:text-white">
               <ChevronLeft size={20} />
               <span>Back</span>
-            </a>
+            </Link>
             <h1 className="text-lg font-semibold ml-4 flex items-center gap-2 text-white">
               <Bell size={20} />
               Announcements

@@ -7,18 +7,20 @@ interface IPhoneFrameProps {
 
 export function IPhoneFrame({ children, className }: IPhoneFrameProps) {
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(220,235,220,0.9),_rgba(243,244,246,1)_55%)]">
-      <div className="mx-auto flex min-h-screen items-center justify-center px-0 md:px-6 md:py-10">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(220,235,220,0.85),_rgba(243,244,246,0.98)_38%,_rgba(232,236,242,1)_100%)]">
+      <div className="mx-auto flex min-h-screen items-center justify-center px-0 md:px-6 md:py-12">
         <div className="w-full md:w-[430px]">
           <div
+            data-testid="phone-frame"
             className={cn(
-              'relative min-h-screen bg-ink-100 md:h-[844px] md:min-h-0 md:overflow-hidden md:rounded-[42px] md:border-[10px] md:border-ink-950 md:shadow-[0_32px_80px_rgba(17,24,39,0.28)]',
+              'relative min-h-screen overflow-hidden bg-white md:h-[844px] md:min-h-0 md:rounded-[34px] md:border md:border-white/70 md:shadow-[0_28px_70px_rgba(17,24,39,0.16),0_8px_24px_rgba(17,24,39,0.08)] md:ring-1 md:ring-ink-950/6',
               className
             )}
           >
-            <div className="pointer-events-none absolute inset-x-0 top-0 z-50 hidden justify-center md:flex">
-              <div className="mt-3 h-7 w-40 rounded-full bg-ink-950" />
-            </div>
+            <div
+              data-testid="phone-frame-sheen"
+              className="pointer-events-none absolute inset-x-0 top-0 z-40 hidden h-20 bg-[linear-gradient(180deg,rgba(255,255,255,0.2),rgba(255,255,255,0))] md:block"
+            />
             {children}
           </div>
         </div>

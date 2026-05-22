@@ -1,4 +1,11 @@
-import type { ActionCenterModel, ActionItem, Family, FamilyActionStatus, FamilyProgressSummary } from '@gridiron/shared'
+import type {
+  ActionCenterModel,
+  ActionItem,
+  Family,
+  FamilyActionStatus,
+  FamilyProgressSummary,
+  VolunteerSignup,
+} from '@gridiron/shared'
 import { actionCenterDemo } from '@/lib/demo-data'
 import { buildFamilyProgressSummary, resolveReadableFamily } from '@/lib/data/family'
 import { createClient } from '@/lib/supabase/server'
@@ -10,7 +17,10 @@ export interface ActionCenterDataResult {
   requiresSetup?: boolean
 }
 
-function buildProgress(statuses: FamilyActionStatus[], volunteerSignups: any[] = []): FamilyProgressSummary {
+function buildProgress(
+  statuses: FamilyActionStatus[],
+  volunteerSignups: VolunteerSignup[] = []
+): FamilyProgressSummary {
   return buildFamilyProgressSummary({
     actionItemsComplete: statuses.filter((status) => status.status === 'complete').length,
     actionItemsTotal: statuses.length,

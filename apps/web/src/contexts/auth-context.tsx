@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { User } from '@supabase/supabase-js'
+import { SupabaseClient, User } from '@supabase/supabase-js'
 
 interface Profile {
   id: string
@@ -28,10 +28,65 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+interface TeamMembershipRow {
+  role: string
+  teams: Array<{
+    id: string
+    name: string
+    level: string
+  }>
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
+
+  async function fetchProfile(supabase: SupabaseClient, userId: string) {
+    try {
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+
+      if (profileError) {
+        console.error('Profile error:', profileError)
+        setProfile(null)
+        return
+      }
+
+      let teams: Profile['teams'] = []
+      try {
+        const { data: teamData, error: teamError } = await supabase
+          .from('team_members')
+          .select(`
+            role,
+            teams!inner(id, name, level)
+          `)
+          .eq('profile_id', userId)
+
+        if (!teamError && teamData) {
+          teams = (teamData as TeamMembershipRow[]).map((teamMember) => ({
+            id: teamMember.teams[0]?.id ?? '',
+            name: teamMember.teams[0]?.name ?? '',
+            level: teamMember.teams[0]?.level ?? '',
+            role: teamMember.role,
+          }))
+        }
+      } catch (teamError) {
+        console.error('Team query error:', teamError)
+      }
+
+      setProfile({
+        ...profileData,
+        teams,
+      })
+    } catch (error) {
+      console.error('Error fetching profile:', error)
+      setProfile(null)
+    }
+  }
 
   useEffect(() => {
     // Only run on client side
@@ -76,58 +131,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     initAuth()
   }, [])
-
-  const fetchProfile = async (supabase: any, userId: string) => {
-    try {
-      // Get user profile
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
-
-      if (profileError) {
-        console.error('Profile error:', profileError)
-        // Don't throw error, just set basic profile without teams
-        setProfile(null)
-        return
-      }
-
-      // Get user's teams (with error handling)
-      let teams = []
-      try {
-        const { data: teamData, error: teamError } = await supabase
-          .from('team_members')
-          .select(`
-            role,
-            teams!inner(id, name, level)
-          `)
-          .eq('profile_id', userId)
-
-        if (!teamError && teamData) {
-          teams = teamData.map((tm: any) => ({
-            id: tm.teams.id,
-            name: tm.teams.name,
-            level: tm.teams.level,
-            role: tm.role
-          }))
-        }
-      } catch (teamError) {
-        console.error('Team query error:', teamError)
-        // Continue without teams if query fails
-      }
-
-      const profileWithTeams = {
-        ...profileData,
-        teams: teams
-      }
-
-      setProfile(profileWithTeams)
-    } catch (error) {
-      console.error('Error fetching profile:', error)
-      setProfile(null)
-    }
-  }
 
   const refreshProfile = async () => {
     if (user && typeof window !== 'undefined') {

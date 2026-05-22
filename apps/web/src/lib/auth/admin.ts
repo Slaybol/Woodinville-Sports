@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import type { ProfileRole } from '@gridiron/shared'
 
 type AdminGuardFailureMode = 'redirect-to-auth' | 'redirect-home'
+const adminWebRoles: ProfileRole[] = ['coach', 'team_parent', 'fgic_admin']
 
 interface EnsureAdminOptions {
   onUnauthenticated?: AdminGuardFailureMode
@@ -37,7 +39,7 @@ export async function requireAdminAccess(options: EnsureAdminOptions = {}) {
     .eq('id', user.id)
     .single()
 
-  if (error || profile?.role !== 'fgic_admin') {
+  if (error || !profile?.role || !adminWebRoles.includes(profile.role as ProfileRole)) {
     handleFailure(onUnauthorized)
   }
 

@@ -18,7 +18,6 @@ function statusClass(tone: 'live' | 'fallback') {
 }
 
 export function PreviewShell({
-  title,
   subtitle,
   statusLabel,
   statusTone,

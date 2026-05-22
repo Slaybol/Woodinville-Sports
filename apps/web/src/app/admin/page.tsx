@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { WoodinvilleLogo } from '@/components/branding/woodinville-logo'
-import { Badge } from '@/components/ui/badge'
+import { Badge, type BadgeProps } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -24,7 +24,7 @@ const adminNav = [
   { label: 'Volunteer', href: '/admin/volunteers', icon: Users },
 ]
 
-function metricBadge(tone: string) {
+function metricBadge(tone: string): NonNullable<BadgeProps['variant']> {
   if (tone === 'destructive') return 'destructive'
   if (tone === 'warning') return 'warning'
   if (tone === 'info') return 'info'
@@ -232,7 +232,7 @@ export default async function AdminDashboardPage() {
                 <CardContent className="pt-4 sm:pt-5">
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <p className="text-sm font-bold text-ink-600">{metric.label}</p>
-                    <Badge variant={metricBadge(metric.tone) as any}>{metric.value}</Badge>
+                    <Badge variant={metricBadge(metric.tone)}>{metric.value}</Badge>
                   </div>
                   <p className="text-sm leading-5 text-ink-600">{metric.detail}</p>
                 </CardContent>

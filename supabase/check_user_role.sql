@@ -1,4 +1,4 @@
--- Check your current user role and update to coach/admin if needed
+-- Check your current user role and update to a demo/admin web role if needed
 -- Run this in your Supabase SQL Editor
 
 -- First, find your user profile
@@ -20,4 +20,9 @@ LIMIT 5;
 -- Or update to team_parent:
 -- UPDATE public.profiles 
 -- SET role = 'team_parent' 
+-- WHERE email = 'your-email@example.com';
+
+-- FGIC admins can also access /admin:
+-- UPDATE public.profiles
+-- SET role = 'fgic_admin'
 -- WHERE email = 'your-email@example.com';

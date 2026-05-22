@@ -491,17 +491,29 @@ $$;
 
 create policy "profiles can read self"
 on public.profiles for select
-using (id = auth.uid() or public.is_program_admin());
+using (id = auth.uid());
 
 create policy "profiles can update self"
 on public.profiles for update
 using (id = auth.uid())
 with check (id = auth.uid());
 
-create policy "admins can manage profiles"
-on public.profiles for all
+create policy "profiles can insert self"
+on public.profiles for insert
+with check (id = auth.uid());
+
+create policy "admins can insert profiles"
+on public.profiles for insert
+with check (public.is_program_admin());
+
+create policy "admins can update profiles"
+on public.profiles for update
 using (public.is_program_admin())
 with check (public.is_program_admin());
+
+create policy "admins can delete profiles"
+on public.profiles for delete
+using (public.is_program_admin());
 
 create policy "families visible to members and admins"
 on public.families for select

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { AuthShell } from '@/components/layout/auth-shell'
 import { Button } from '@/components/ui/button'
 
@@ -9,11 +9,6 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,8 +16,6 @@ export default function ForgotPasswordPage() {
     setError('')
 
     try {
-      if (!mounted) return
-
       const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
 
@@ -33,15 +26,11 @@ export default function ForgotPasswordPage() {
       if (error) throw error
 
       setMessage('Password reset link sent. Check your email for the next step.')
-    } catch (err: any) {
-      setError(err.message || 'An error occurred')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
     }
-  }
-
-  if (!mounted) {
-    return <div className="min-h-screen bg-ink-50" />
   }
 
   return (

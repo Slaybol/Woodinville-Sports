@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { 
   Phone, 
   ChevronLeft,
@@ -7,7 +8,7 @@ import {
   User,
   AlertCircle
 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
 interface EmergencyContact {
@@ -69,10 +70,10 @@ export default function EmergencyPage() {
       <header className="bg-primary text-primary-foreground">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
-            <a href="/" className="flex items-center gap-2 hover:opacity-80">
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80">
               <ChevronLeft size={20} />
               <span>Back</span>
-            </a>
+            </Link>
             <h1 className="text-lg font-semibold ml-4 flex items-center gap-2">
               <Phone size={20} />
               Emergency Contacts
