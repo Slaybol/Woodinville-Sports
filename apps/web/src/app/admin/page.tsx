@@ -8,21 +8,20 @@ import {
   Megaphone,
   Plus,
   Send,
-  Settings,
   Users,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { WoodinvilleLogo } from '@/components/branding/woodinville-logo'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const adminNav = [
   { label: 'Dashboard', href: '/admin', icon: Home },
-  { label: 'Huddles', href: '/admin/huddles/new', icon: Megaphone },
+  { label: 'Huddle', href: '/admin/huddles/new', icon: Megaphone },
   { label: 'Actions', href: '/admin/actions', icon: ClipboardList },
   { label: 'Calendar', href: '/admin/calendar', icon: CalendarDays },
-  { label: 'Families', href: '/admin/families', icon: Users },
-  { label: 'Settings', href: '/admin/settings', icon: Settings },
+  { label: 'Volunteer', href: '/admin/volunteers', icon: Users },
 ]
 
 function metricBadge(tone: string) {
@@ -159,9 +158,12 @@ export default async function AdminDashboardPage() {
     <div className="min-h-screen bg-ink-50">
       <header className="falcons-header sticky top-0 z-50">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div>
-            <p className="text-base font-bold leading-5">Gridiron Admin</p>
-            <p className="text-xs text-white/75">Weekly Huddle operations</p>
+          <div className="flex items-center gap-3">
+            <WoodinvilleLogo size={40} priority />
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.16em] text-white/70">Woodinville Football</p>
+              <p className="mt-1 font-display text-2xl leading-none text-white">Gridiron Admin</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <Link href="/admin/huddles/new">
@@ -204,8 +206,9 @@ export default async function AdminDashboardPage() {
                   {openVolunteerSlots > 0 ? `${openVolunteerSlots} open volunteer gaps` : 'Volunteer coverage healthy'}
                 </Badge>
               </div>
-              <h1 className="text-3xl font-bold leading-9 text-ink-950">Admin Dashboard</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-600">
+              <p className="brand-kicker">Operations</p>
+              <h1 className="mt-2 font-display text-4xl leading-none text-ink-950">Admin Dashboard</h1>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-600">
                 Review what needs attention before families receive the next Weekly Huddle.
               </p>
             </div>

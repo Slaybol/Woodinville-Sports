@@ -30,21 +30,13 @@ export async function updateFamilyActionStatus(formData: FormData) {
     admin_note: null,
   }
 
-  const { data: existing } = await supabase
+  await supabase
     .from('family_action_status')
-    .select('id')
-    .eq('family_id', familyId)
-    .eq('action_item_id', actionItemId)
-    .maybeSingle()
-
-  if (existing?.id) {
-    await supabase.from('family_action_status').update(payload).eq('id', existing.id)
-  } else {
-    await supabase.from('family_action_status').insert(payload)
-  }
+    .upsert(payload, { onConflict: 'family_id,action_item_id' })
 
   revalidatePath('/')
   revalidatePath('/actions')
+  revalidatePath('/profile')
   revalidatePath('/preview/huddle')
   revalidatePath('/preview/actions')
   revalidatePath('/admin')
@@ -84,22 +76,14 @@ export async function toggleVolunteerSignup(formData: FormData) {
       hours_credited: hoursCredited,
     }
 
-    const { data: existing } = await supabase
+    await supabase
       .from('volunteer_signups')
-      .select('id')
-      .eq('family_id', familyId)
-      .eq('slot_id', slotId)
-      .maybeSingle()
-
-    if (existing?.id) {
-      await supabase.from('volunteer_signups').update(payload).eq('id', existing.id)
-    } else {
-      await supabase.from('volunteer_signups').insert(payload)
-    }
+      .upsert(payload, { onConflict: 'slot_id,family_id' })
   }
 
   revalidatePath('/')
   revalidatePath('/volunteers')
+  revalidatePath('/profile')
   revalidatePath('/preview/volunteers')
   revalidatePath('/admin')
 }

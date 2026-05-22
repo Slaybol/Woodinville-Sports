@@ -14,6 +14,12 @@ export interface CalendarEventsDataResult {
   reason?: string
 }
 
+export interface EventDetailDataResult {
+  event: CalendarEvent | null
+  source: 'supabase' | 'demo'
+  reason?: string
+}
+
 export async function getCalendarEventsResult(): Promise<CalendarEventsDataResult> {
   try {
     const supabase = await createClient()
@@ -72,4 +78,34 @@ export async function getCalendarEventsResult(): Promise<CalendarEventsDataResul
 export async function getCalendarEvents(): Promise<CalendarEvent[]> {
   const result = await getCalendarEventsResult()
   return result.events
+}
+
+export async function getEventDetailResult(eventId: string): Promise<EventDetailDataResult> {
+  try {
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('events').select('*').eq('id', eventId).maybeSingle()
+
+    if (error || !data) {
+      const demoMatch = demoEvents.find((event) => event.id === eventId) || null
+
+      return {
+        event: demoMatch,
+        source: demoMatch ? 'demo' : 'supabase',
+        reason: error?.message || (demoMatch ? 'Event loaded from demo data.' : 'Event not found.'),
+      }
+    }
+
+    return {
+      event: data as CalendarEvent,
+      source: 'supabase',
+    }
+  } catch {
+    const demoMatch = demoEvents.find((event) => event.id === eventId) || null
+
+    return {
+      event: demoMatch,
+      source: demoMatch ? 'demo' : 'supabase',
+      reason: demoMatch ? 'Event detail fell back to demo data.' : 'Event detail could not be loaded.',
+    }
+  }
 }

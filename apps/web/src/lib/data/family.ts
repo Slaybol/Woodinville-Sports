@@ -19,6 +19,7 @@ export async function resolveReadableFamily(supabase: SupabaseLike): Promise<Fam
       .from('family_members')
       .select('family_id')
       .eq('profile_id', user.id)
+      .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle()
 
@@ -33,6 +34,20 @@ export async function resolveReadableFamily(supabase: SupabaseLike): Promise<Fam
         return family as Family
       }
     }
+
+    const { data: primaryContactFamily } = await supabase
+      .from('families')
+      .select('*')
+      .eq('primary_contact_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (primaryContactFamily) {
+      return primaryContactFamily as Family
+    }
+
+    return null
   }
 
   const { data: fallbackFamily } = await supabase

@@ -17,6 +17,7 @@ import {
 import type { ActionImportance } from '@gridiron/shared'
 import { demoTeams } from '@/lib/demo-data'
 import { createClient } from '@/lib/supabase/server'
+import { WoodinvilleLogo } from '@/components/branding/woodinville-logo'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -175,9 +176,10 @@ export default async function HuddleEditorPage({
             <Link href="/admin" className="flex h-9 w-9 items-center justify-center rounded-md bg-white/15 text-white">
               <ArrowLeft size={20} />
             </Link>
+            <WoodinvilleLogo size={40} priority />
             <div>
-              <p className="text-base font-bold leading-5">Huddle Editor</p>
-              <p className="text-xs text-white/75">Draft, target, preview, and publish</p>
+              <p className="text-[11px] uppercase tracking-[0.16em] text-white/70">Woodinville Football</p>
+              <p className="mt-1 font-display text-2xl leading-none text-white">Huddle Editor</p>
             </div>
           </div>
 
@@ -221,8 +223,9 @@ export default async function HuddleEditorPage({
               <Badge variant="outline">{draft?.date_range || 'May 24-31'}</Badge>
               <Badge variant="destructive">2 warnings</Badge>
             </div>
-            <h1 className="text-3xl font-bold leading-9 text-ink-950">Weekly Huddle draft</h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-600">
+            <p className="brand-kicker">Publishing workflow</p>
+            <h1 className="mt-2 font-display text-4xl leading-none text-ink-950">Weekly Huddle draft</h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-600">
               Create structured content once, then publish it to the parent Huddle, Action Center, Calendar, and Volunteer surfaces.
             </p>
           </div>

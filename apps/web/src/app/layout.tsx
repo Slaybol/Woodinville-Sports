@@ -1,9 +1,25 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Abel, Alice, Oswald } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/contexts/auth-context'
 
-const inter = Inter({ subsets: ['latin'] })
+const abel = Abel({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-sans',
+})
+
+const alice = Alice({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-editorial',
+})
+
+const oswald = Oswald({
+  subsets: ['latin'],
+  weight: ['600', '700'],
+  variable: '--font-display',
+})
 
 export const metadata: Metadata = {
   title: 'Woodinville Sports - Gridiron Connect',
@@ -17,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${abel.variable} ${alice.variable} ${oswald.variable} font-sans`}>
         <AuthProvider>
           {children}
         </AuthProvider>

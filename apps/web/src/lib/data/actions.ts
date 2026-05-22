@@ -7,6 +7,7 @@ export interface ActionCenterDataResult {
   model: ActionCenterModel
   source: 'supabase' | 'demo'
   reason?: string
+  requiresSetup?: boolean
 }
 
 function buildProgress(statuses: FamilyActionStatus[], volunteerSignups: any[] = []): FamilyProgressSummary {
@@ -22,12 +23,20 @@ export async function getActionCenterResult(): Promise<ActionCenterDataResult> {
   try {
     const supabase = await createClient()
 
-    const [
-      { data: actions, error: actionsError },
-    ] = await Promise.all([
+    const [{ data: currentHuddle }] = await Promise.all([
+      supabase
+        .from('huddles')
+        .select('id')
+        .eq('status', 'published')
+        .order('starts_on', { ascending: false, nullsFirst: false })
+        .limit(1)
+        .maybeSingle(),
+    ])
+    const [{ data: actions, error: actionsError }] = await Promise.all([
       supabase
         .from('action_items')
         .select('*')
+        .eq('huddle_id', currentHuddle?.id || '')
         .order('due_at', { ascending: true, nullsFirst: false }),
     ])
     const family = await resolveReadableFamily(supabase)
@@ -44,7 +53,8 @@ export async function getActionCenterResult(): Promise<ActionCenterDataResult> {
       return {
         model: actionCenterDemo,
         source: 'demo',
-        reason: 'No readable family row was available.',
+        reason: 'Finish family setup before tracking checklist progress.',
+        requiresSetup: true,
       }
     }
 

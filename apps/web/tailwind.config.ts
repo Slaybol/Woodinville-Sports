@@ -11,14 +11,14 @@ const config: Config = {
     extend: {
       colors: {
         falcon: {
-          50: '#f0fbf5',
-          100: '#dff4e8',
-          500: '#18a65b',
-          600: '#0a8a49',
-          700: '#08743d',
-          800: '#075c31',
-          900: '#064725',
-          950: '#052e1b',
+          50: '#eff7ef',
+          100: '#dcebdc',
+          500: '#198d17',
+          600: '#157915',
+          700: '#116412',
+          800: '#0d5110',
+          900: '#093f0c',
+          950: '#062807',
         },
         ink: {
           50: '#f9fafb',
@@ -32,8 +32,8 @@ const config: Config = {
           950: '#111827',
         },
         gold: {
-          100: '#fbf0c9',
-          500: '#d6a820',
+          100: '#efe4b9',
+          500: '#b89a43',
         },
         statusRed: {
           100: '#fee2e2',
@@ -42,6 +42,14 @@ const config: Config = {
         statusBlue: {
           100: '#dbeafe',
           600: '#2563eb',
+        },
+        brandNavy: {
+          50: '#edf1fb',
+          100: '#d9e1f4',
+          700: '#1a2f74',
+          800: '#12225d',
+          900: '#0a143d',
+          950: '#060d28',
         },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -72,6 +80,11 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+      },
+      fontFamily: {
+        sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'var(--font-sans)', 'ui-sans-serif', 'sans-serif'],
+        editorial: ['var(--font-editorial)', 'Georgia', 'serif'],
       },
       borderRadius: {
         lg: 'var(--radius)',

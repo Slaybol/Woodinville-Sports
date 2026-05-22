@@ -1,19 +1,13 @@
 'use client'
 
-import Link from 'next/link'
+import { useState } from 'react'
 import {
   AlertTriangle,
-  CalendarDays,
   CheckCircle2,
-  ChevronLeft,
-  ClipboardList,
   Clock,
   ExternalLink,
   FileCheck2,
   Filter,
-  Home,
-  Menu,
-  Users,
 } from 'lucide-react'
 import type { ActionCenterModel, ActionItem, ActionStatus } from '@gridiron/shared'
 import { Badge } from '@/components/ui/badge'
@@ -31,14 +25,6 @@ interface ActionCenterContentProps {
 }
 
 const filters = ['All', 'Required', 'Due soon', 'Complete']
-
-const navItems = [
-  { label: 'Huddle', href: '/', icon: Home },
-  { label: 'Actions', href: '/actions', icon: ClipboardList },
-  { label: 'Calendar', href: '/schedule', icon: CalendarDays },
-  { label: 'Volunteer', href: '/volunteers', icon: Users },
-  { label: 'More', href: '/profile', icon: Menu },
-]
 
 function statusLabel(status: ActionStatus) {
   switch (status) {
@@ -103,35 +89,28 @@ function importanceLabel(action: ActionItem) {
 }
 
 export function ActionCenterContent({ model, preview = false, onUpdateStatus, dataState }: ActionCenterContentProps) {
+  const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]>('All')
   const urgentCount = model.items.filter(({ action, status }) => isUrgent(action, status.status)).length
   const dueSoonCount = model.items.filter(({ action, status }) => isDueSoon(action, status.status)).length
   const percent =
     model.progress.action_items_total === 0
       ? 0
       : Math.round((model.progress.action_items_complete / model.progress.action_items_total) * 100)
+  const filteredItems = model.items.filter(({ action, status }) => {
+    if (activeFilter === 'Required') {
+      return action.importance === 'required' || action.importance === 'family'
+    }
+    if (activeFilter === 'Due soon') {
+      return isUrgent(action, status.status) || isDueSoon(action, status.status)
+    }
+    if (activeFilter === 'Complete') {
+      return status.status === 'complete'
+    }
+    return true
+  })
 
   return (
-    <div className="min-h-screen bg-ink-50 pb-20 md:pb-0">
-      {!preview && (
-        <header className="falcons-header sticky top-0 z-50">
-          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-3">
-              <Link href="/" className="flex h-9 w-9 items-center justify-center rounded-md bg-white/15 text-white">
-                <ChevronLeft size={20} />
-              </Link>
-              <div>
-                <p className="text-base font-bold leading-5">Action Center</p>
-                <p className="text-xs text-white/75">Family checklist and deadlines</p>
-              </div>
-            </div>
-            <Badge className="hidden bg-white/15 text-white md:inline-flex">
-              {model.progress.action_items_complete} of {model.progress.action_items_total} complete
-            </Badge>
-          </div>
-        </header>
-      )}
-
-      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+    <main className="mx-auto max-w-[460px] px-4 py-6">
         {dataState && (
           <div className="mb-6 flex flex-wrap items-center gap-2">
             <Badge className={dataState.source === 'supabase' ? 'bg-falcon-100 text-falcon-900' : 'bg-gold-100 text-amber-950'}>
@@ -143,14 +122,15 @@ export function ActionCenterContent({ model, preview = false, onUpdateStatus, da
           </div>
         )}
 
-        <section className="mb-6 grid gap-4 md:grid-cols-[minmax(0,1fr)_280px]">
+        <section className="mb-6 grid gap-4">
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <Badge variant="destructive">{urgentCount} urgent</Badge>
               <Badge variant="warning">{dueSoonCount} due soon</Badge>
             </div>
-            <h1 className="text-3xl font-bold leading-9 text-ink-950">What your family needs to do</h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-600">
+            <p className="brand-kicker">Action Center</p>
+            <h1 className="mt-2 font-display text-4xl leading-none text-ink-950">What your family needs to do</h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-600">
               Required, optional, and completed items for the {model.family.name}.
             </p>
           </div>
@@ -174,7 +154,13 @@ export function ActionCenterContent({ model, preview = false, onUpdateStatus, da
         <div className="mb-4 flex items-center gap-2 overflow-x-auto pb-1">
           <Filter size={16} className="shrink-0 text-ink-500" />
           {filters.map((filter) => (
-            <Button key={filter} size="sm" variant={filter === 'All' ? 'default' : 'outline'}>
+            <Button
+              key={filter}
+              type="button"
+              size="sm"
+              variant={filter === activeFilter ? 'default' : 'outline'}
+              onClick={() => setActiveFilter(filter)}
+            >
               {filter}
             </Button>
           ))}
@@ -182,12 +168,12 @@ export function ActionCenterContent({ model, preview = false, onUpdateStatus, da
 
         <Card>
           <CardContent className="space-y-3 pt-4 sm:pt-5">
-            {model.items.map(({ action, status }) => {
+            {filteredItems.map(({ action, status }) => {
               const tone = getTone(action, status.status)
               const Icon = tone.icon
 
               return (
-                <div key={action.id} className="flex min-h-16 flex-col gap-3 rounded-lg border border-ink-200 p-3 md:flex-row md:items-start">
+                <div key={action.id} className="flex min-h-16 flex-col gap-3 rounded-lg border border-ink-200 p-3">
                   <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md ${tone.iconClass}`}>
                     <Icon size={18} />
                   </div>
@@ -206,7 +192,7 @@ export function ActionCenterContent({ model, preview = false, onUpdateStatus, da
                       <span>{action.audience_label}</span>
                     </div>
                   </div>
-                  <div className="flex w-full flex-col gap-2 md:w-auto">
+                  <div className="flex w-full flex-col gap-2">
                     {onUpdateStatus && !preview && (
                       <form action={onUpdateStatus}>
                         <input type="hidden" name="family_id" value={status.family_id} />
@@ -216,7 +202,7 @@ export function ActionCenterContent({ model, preview = false, onUpdateStatus, da
                           name="next_status"
                           value={status.status === 'complete' ? 'not_started' : 'complete'}
                         />
-                        <Button variant={status.status === 'complete' ? 'outline' : 'default'} size="sm" className="w-full md:w-auto">
+                        <Button variant={status.status === 'complete' ? 'outline' : 'default'} size="sm" className="w-full">
                           {status.status === 'complete' ? 'Mark Incomplete' : 'Mark Complete'}
                         </Button>
                       </form>
@@ -224,42 +210,27 @@ export function ActionCenterContent({ model, preview = false, onUpdateStatus, da
 
                     {action.external_url ? (
                       <a href={action.external_url} target="_blank" rel="noreferrer">
-                        <Button variant="outline" size="sm" className="w-full md:w-auto">
+                        <Button variant="outline" size="sm" className="w-full">
                           Open Link
                           <ExternalLink size={14} className="ml-2" />
                         </Button>
                       </a>
                     ) : (
-                      <Button variant="outline" size="sm" className="w-full md:w-auto">
-                        View
-                      </Button>
+                      <div className="rounded-md border border-ink-200 px-3 py-2 text-center text-xs font-bold text-ink-500">
+                        No external link
+                      </div>
                     )}
                   </div>
                 </div>
               )
             })}
+            {filteredItems.length === 0 && (
+              <div className="rounded-lg border border-dashed border-ink-300 p-4 text-sm text-ink-600">
+                No action items match this filter right now.
+              </div>
+            )}
           </CardContent>
         </Card>
       </main>
-
-      {!preview && (
-        <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-ink-200 bg-white md:hidden">
-          <div className="grid h-16 grid-cols-5">
-            {navItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`flex flex-col items-center justify-center gap-1 text-[11px] font-bold ${
-                  item.href === '/actions' ? 'text-falcon-700' : 'text-ink-500'
-                }`}
-              >
-                <item.icon size={21} />
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </nav>
-      )}
-    </div>
   )
 }

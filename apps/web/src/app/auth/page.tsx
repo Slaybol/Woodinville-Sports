@@ -1,26 +1,35 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { AuthShell } from '@/components/layout/auth-shell'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+
+type InviteRole = 'parent' | 'team_parent' | 'coach'
+
+interface TeamOption {
+  id: string
+  name: string
+}
+
+function familyNameFromContact(fullName: string) {
+  const lastName = fullName.trim().split(/\s+/).filter(Boolean).slice(-1)[0]
+  return lastName ? `${lastName} family` : 'Woodinville family'
+}
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
-  const [role, setRole] = useState<'parent' | 'team_parent' | 'coach'>('parent')
-  const [selectedTeam, setSelectedTeam] = useState<string>('')
+  const [role, setRole] = useState<InviteRole>('parent')
+  const [selectedTeam, setSelectedTeam] = useState('')
   const [invitationCode, setInvitationCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const [mounted, setMounted] = useState(false)
-  const [teams, setTeams] = useState<Array<{id: string, name: string}>>([])
-  const [invitationData, setInvitationData] = useState<any>(null)
+  const [teams, setTeams] = useState<TeamOption[]>([])
   const router = useRouter()
 
   useEffect(() => {
@@ -28,39 +37,27 @@ export default function AuthPage() {
   }, [])
 
   useEffect(() => {
-    // Load teams when component mounts
     const loadTeams = async () => {
       if (!mounted) return
-      
+
       try {
         const { createClient } = await import('@/lib/supabase/client')
         const supabase = createClient()
-        
-        const { data, error } = await supabase
-          .from('teams')
-          .select('id, name')
-          .eq('sport', 'football')
-          .order('name')
-
-        if (error) throw error
+        const { data } = await supabase.from('teams').select('id, name').eq('sport', 'football').order('name')
         setTeams(data || [])
-        
-        // Auto-select first team for parents
-        if (data && data.length > 0 && role === 'parent') {
-          setSelectedTeam(data[0].id)
-        }
-      } catch (error) {
-        console.error('Error loading teams:', error)
+      } catch (teamError) {
+        console.error('Error loading teams:', teamError)
       }
     }
 
     loadTeams()
-  }, [mounted, role])
+  }, [mounted])
 
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleAuth = async (event: React.FormEvent) => {
+    event.preventDefault()
     setLoading(true)
     setError('')
+    setMessage('')
 
     try {
       if (!mounted) return
@@ -69,345 +66,303 @@ export default function AuthPage() {
       const supabase = createClient()
 
       if (isSignUp) {
-        // Validate invitation code first
-        if (!invitationCode) {
-          throw new Error('Invitation code is required')
+        if (!invitationCode.trim()) {
+          throw new Error('Invitation code is required.')
+        }
+
+        if (!fullName.trim()) {
+          throw new Error('Full name is required.')
+        }
+
+        let signedInUser: { id: string; email?: string | null; email_confirmed_at?: string | null } | null = null
+
+        const existingSignIn = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        })
+
+        if (existingSignIn.data.user) {
+          signedInUser = existingSignIn.data.user
+        } else {
+          const signUpResult = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                full_name: fullName.trim(),
+              },
+            },
+          })
+
+          if (signUpResult.error) {
+            throw signUpResult.error
+          }
+
+          signedInUser = signUpResult.data.user
+        }
+
+        if (!signedInUser?.id) {
+          throw new Error('We could not create or restore your account session.')
         }
 
         const { data: invitation, error: invitationError } = await supabase
           .from('invitations')
           .select('*')
-          .eq('code', invitationCode.toUpperCase())
+          .eq('code', invitationCode.trim().toUpperCase())
+          .eq('email', email)
           .eq('status', 'pending')
-          .single()
+          .maybeSingle()
 
         if (invitationError || !invitation) {
-          throw new Error('Invalid or expired invitation code')
+          throw new Error('Invitation not found for this email address.')
         }
 
-        // Check if invitation has expired
         if (new Date(invitation.expires_at) < new Date()) {
-          throw new Error('Invitation has expired')
+          throw new Error('Invitation has expired.')
         }
 
-        // Pre-fill form with invitation data
-        if (invitation.email && !email) setEmail(invitation.email)
-        if (invitation.full_name && !fullName) setFullName(invitation.full_name)
-        if (invitation.role && role === 'parent') setRole(invitation.role)
-        if (invitation.team_id && !selectedTeam) setSelectedTeam(invitation.team_id)
+        const invitedRole = (invitation.role as InviteRole) || role
+        const invitedTeamId = invitation.team_id || selectedTeam || null
 
-        setInvitationData(invitation)
+        const { error: profileError } = await supabase.from('profiles').upsert(
+          {
+            id: signedInUser.id,
+            email,
+            full_name: fullName.trim(),
+            role: invitedRole,
+          },
+          { onConflict: 'id' }
+        )
 
-        // Check if user already exists first
-        const { data: existingUser } = await supabase.auth.signInWithPassword({
-          email: email || invitation.email,
-          password,
-        })
-
-        if (existingUser.user) {
-          // User already exists, sign them in
-          router.push('/')
-          return
+        if (profileError) {
+          throw profileError
         }
 
-        // Sign up new user
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email: email || invitation.email,
-          password,
-          options: {
-            data: {
-              full_name: fullName || invitation.full_name,
-              role: role || invitation.role,
+        if (invitedRole === 'parent') {
+          const { data: existingMembership } = await supabase
+            .from('family_members')
+            .select('family_id')
+            .eq('profile_id', signedInUser.id)
+            .limit(1)
+            .maybeSingle()
+
+          if (!existingMembership?.family_id) {
+            const { data: createdFamily, error: familyError } = await supabase
+              .from('families')
+              .insert({
+                name: familyNameFromContact(fullName),
+                primary_contact_id: signedInUser.id,
+              })
+              .select('id')
+              .single()
+
+            if (familyError || !createdFamily?.id) {
+              throw familyError || new Error('Unable to create a family profile.')
+            }
+
+            const { error: familyMemberError } = await supabase.from('family_members').insert({
+              family_id: createdFamily.id,
+              profile_id: signedInUser.id,
+              role: 'guardian',
+              display_name: fullName.trim(),
+              is_primary: true,
+            })
+
+            if (familyMemberError) {
+              throw familyMemberError
             }
           }
-        })
+        } else if (invitedTeamId) {
+          const { error: teamMemberError } = await supabase.from('team_members').upsert(
+            {
+              profile_id: signedInUser.id,
+              team_id: invitedTeamId,
+              role: invitedRole,
+            },
+            { onConflict: 'team_id,profile_id' }
+          )
 
-        if (authError) throw authError
-
-        if (authData.user) {
-          // Create profile record - use upsert to handle existing profiles
-          const { error: profileError } = await supabase
-            .from('profiles')
-            .upsert({
-              id: authData.user.id,
-              email: authData.user.email!,
-              full_name: fullName || invitation.full_name,
-              role: role || invitation.role,
-            }, {
-              onConflict: 'id' // Handle conflicts on the id column
-            })
-
-          if (profileError) throw profileError
-
-          // Assign user to team from invitation
-          const finalTeamId = selectedTeam || invitation.team_id
-          if (finalTeamId) {
-            const { error: teamMemberError } = await supabase
-              .from('team_members')
-              .insert({
-                user_id: authData.user.id,
-                team_id: finalTeamId,
-                role: role || invitation.role,
-                joined_at: new Date().toISOString(),
-              })
-
-            if (teamMemberError) throw teamMemberError
-          }
-
-          // Mark invitation as accepted
-          await supabase
-            .from('invitations')
-            .update({ 
-              status: 'accepted',
-              accepted_at: new Date().toISOString(),
-              accepted_by: authData.user.id
-            })
-            .eq('id', invitation.id)
-
-          // For development: if email confirmation is disabled, sign in immediately
-          if (!authData.user.email_confirmed_at) {
-            // User created but email not confirmed
-            setMessage('Account created! Please check your email to verify your account.')
-          } else {
-            // Email confirmation disabled, sign in immediately
-            const { error: signInError } = await supabase.auth.signInWithPassword({
-              email: email || invitation.email,
-              password,
-            })
-            if (signInError) throw signInError
-            router.push('/')
+          if (teamMemberError) {
+            throw teamMemberError
           }
         }
+
+        const { error: invitationUpdateError } = await supabase
+          .from('invitations')
+          .update({
+            status: 'accepted',
+            accepted_at: new Date().toISOString(),
+            accepted_by: signedInUser.id,
+          })
+          .eq('id', invitation.id)
+
+        if (invitationUpdateError) {
+          throw invitationUpdateError
+        }
+
+        if (!signedInUser.email_confirmed_at) {
+          setMessage('Account created. If email confirmation is enabled, verify your email before signing in again.')
+        } else {
+          router.push(invitedRole === 'parent' ? '/profile?setup=1' : '/')
+        }
       } else {
-        // Sign in
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
           email,
           password,
         })
 
-        if (authError) throw authError
+        if (authError) {
+          throw authError
+        }
 
         if (authData.user) {
           router.push('/')
         }
       }
-    } catch (error: any) {
-      setError(error.message || 'An error occurred')
+    } catch (authError: any) {
+      setError(authError.message || 'An error occurred.')
     } finally {
       setLoading(false)
     }
   }
 
   if (!mounted) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl font-bold text-white">W</span>
-          </div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    )
+    return <div className="min-h-screen bg-ink-50" />
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        {/* Woodinville Header */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl font-bold text-white">W</span>
+    <AuthShell
+      title={isSignUp ? 'Accept Invitation' : 'Sign In'}
+      subtitle={
+        isSignUp
+          ? 'Create access using the invitation details sent by your coach or team admin.'
+          : 'Sign in to view this week’s huddle, family action items, calendar logistics, and volunteer needs.'
+      }
+      footerLink={
+        isSignUp
+          ? { href: '/auth', label: 'Already have an account? Sign in' }
+          : { href: '/auth/forgot-password', label: 'Forgot your password?' }
+      }
+    >
+      <form onSubmit={handleAuth} className="space-y-4">
+        {isSignUp && (
+          <>
+            <label className="block space-y-1.5">
+              <span className="text-sm font-bold text-ink-700">Invitation code</span>
+              <input
+                type="text"
+                value={invitationCode}
+                onChange={(event) => setInvitationCode(event.target.value)}
+                className="h-11 w-full rounded-md border border-ink-300 bg-white px-3 text-sm uppercase outline-none focus:ring-2 focus:ring-falcon-500"
+                placeholder="FALCON-XXXXXX"
+                required
+              />
+            </label>
+
+            <label className="block space-y-1.5">
+              <span className="text-sm font-bold text-ink-700">Full name</span>
+              <input
+                type="text"
+                value={fullName}
+                onChange={(event) => setFullName(event.target.value)}
+                className="h-11 w-full rounded-md border border-ink-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-falcon-500"
+                required
+              />
+            </label>
+          </>
+        )}
+
+        <label className="block space-y-1.5">
+          <span className="text-sm font-bold text-ink-700">Email</span>
+          <input
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            className="h-11 w-full rounded-md border border-ink-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-falcon-500"
+            required
+          />
+        </label>
+
+        <label className="block space-y-1.5">
+          <span className="text-sm font-bold text-ink-700">Password</span>
+          <input
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            className="h-11 w-full rounded-md border border-ink-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-falcon-500"
+            required
+            minLength={6}
+          />
+        </label>
+
+        {isSignUp && (
+          <div className="rounded-lg border border-ink-200 bg-ink-50 p-3 text-sm leading-6 text-ink-600">
+            Invitations usually carry your role and team assignment already. The fields below are only a fallback for older invites.
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Woodinville Sports</h1>
-          <p className="text-gray-600">Falcons Football • Gridiron Connect</p>
-        </div>
+        )}
 
-        <Card className="falcons-card">
-          <CardHeader>
-            <CardTitle className="text-center text-gray-900">
-              {isSignUp ? 'Create Account' : 'Sign In'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleAuth} className="space-y-4">
-              {isSignUp && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Invitation Code *
-                  </label>
-                  <input
-                    type="text"
-                    value={invitationCode}
-                    onChange={(e) => setInvitationCode(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 uppercase"
-                    placeholder="FALCON-XXXXXX"
-                    required
-                  />
-                  <div className="mt-1 text-xs text-gray-500">
-                    Enter the invitation code you received from your coach or team admin
-                  </div>
-                  {invitationData && (
-                    <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-md text-sm">
-                      <div><strong>Invitation for:</strong> {invitationData.full_name}</div>
-                      <div><strong>Role:</strong> {invitationData.role.replace('_', ' ')}</div>
-                      <div><strong>Team:</strong> {invitationData.teams?.name || 'Assigned Team'}</div>
-                      {invitationData.message && (
-                        <div className="mt-1"><strong>Message:</strong> {invitationData.message}</div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
+        {isSignUp && (
+          <label className="block space-y-1.5">
+            <span className="text-sm font-bold text-ink-700">Fallback role</span>
+            <select
+              value={role}
+              onChange={(event) => setRole(event.target.value as InviteRole)}
+              className="h-11 w-full rounded-md border border-ink-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-falcon-500"
+            >
+              <option value="parent">Parent</option>
+              <option value="team_parent">Team Parent</option>
+              <option value="coach">Coach</option>
+            </select>
+          </label>
+        )}
 
-              {isSignUp && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    required
-                    placeholder={invitationData?.full_name || 'Enter your full name'}
-                  />
-                </div>
-              )}
+        {isSignUp && (
+          <label className="block space-y-1.5">
+            <span className="text-sm font-bold text-ink-700">Fallback team</span>
+            <select
+              value={selectedTeam}
+              onChange={(event) => setSelectedTeam(event.target.value)}
+              className="h-11 w-full rounded-md border border-ink-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-falcon-500"
+            >
+              <option value="">Select team if needed</option>
+              {teams.map((team) => (
+                <option key={team.id} value={team.id}>
+                  {team.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  required
-                />
-              </div>
+        {error && (
+          <div className="rounded-md border border-statusRed-100 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </div>
+        )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  required
-                  minLength={6}
-                />
-              </div>
+        {message && (
+          <div className="rounded-md border border-falcon-100 bg-falcon-50 px-3 py-2 text-sm text-falcon-900">
+            {message}
+          </div>
+        )}
 
-              {isSignUp && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Role
-                  </label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {[
-                      { value: 'parent', label: 'Parent', desc: 'View & sign up' },
-                      { value: 'team_parent', label: 'Team Parent', desc: 'Manage volunteers' },
-                      { value: 'coach', label: 'Coach', desc: 'Full access' }
-                    ].map((r) => (
-                      <button
-                        key={r.value}
-                        type="button"
-                        onClick={() => setRole(r.value as any)}
-                        className={`p-2 rounded-lg border-2 text-center transition-colors ${
-                          role === r.value
-                            ? 'border-green-500 bg-green-50'
-                            : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                      >
-                        <div className="text-sm font-medium">{r.label}</div>
-                        <div className="text-xs text-gray-500">{r.desc}</div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+        <Button type="submit" disabled={loading} className="w-full">
+          {loading ? 'Working...' : isSignUp ? 'Create Account' : 'Sign In'}
+        </Button>
+      </form>
 
-              {isSignUp && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Team Assignment
-                  </label>
-                  <select
-                    value={selectedTeam}
-                    onChange={(e) => setSelectedTeam(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    required
-                  >
-                    <option value="">Select a team...</option>
-                    {teams.map((team) => (
-                      <option key={team.id} value={team.id}>
-                        {team.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="mt-1 text-xs text-gray-500">
-                    {role === 'coach' || role === 'team_parent' 
-                      ? 'Coaches and Team Parents can access all teams'
-                      : 'Select your player\'s team'
-                    }
-                  </div>
-                </div>
-              )}
-
-              {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-md text-sm">
-                  {error}
-                </div>
-              )}
-
-              {message && (
-                <div className="bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded-md text-sm">
-                  {message}
-                </div>
-              )}
-
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full falcons-button"
-              >
-                {loading ? 'Loading...' : (isSignUp ? 'Create Account' : 'Sign In')}
-              </Button>
-            </form>
-
-            <div className="mt-4 text-center">
-              <button
-                onClick={() => {
-                  setIsSignUp(!isSignUp)
-                  setError('')
-                  setMessage('')
-                }}
-                className="text-green-600 hover:text-green-800 text-sm"
-              >
-                {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
-              </button>
-            </div>
-
-            {!isSignUp && (
-              <div className="mt-4 text-center">
-                <Link href="/auth/forgot-password" className="text-green-600 hover:text-green-800 text-sm">
-                  Forgot your password?
-                </Link>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <div className="mt-6 text-center text-sm text-gray-500">
-          <p>For Woodinville High School Falcons Football families</p>
-          <p className="mt-1">Questions? Contact the Falcon Gridiron Club</p>
-        </div>
+      <div className="mt-5 border-t border-ink-200 pt-5 text-center">
+        <button
+          onClick={() => {
+            setIsSignUp(!isSignUp)
+            setError('')
+            setMessage('')
+          }}
+          className="text-sm font-bold text-falcon-700 hover:text-falcon-800"
+        >
+          {isSignUp ? 'Already have an account? Sign in' : 'Need to accept an invitation? Start here'}
+        </button>
       </div>
-    </div>
+    </AuthShell>
   )
 }

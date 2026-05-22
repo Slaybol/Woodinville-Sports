@@ -17,6 +17,7 @@ export interface VolunteerCenterDataResult {
   publishedSection?: PublishedSectionContent
   source: 'supabase' | 'demo'
   reason?: string
+  requiresSetup?: boolean
 }
 
 function toDateLabel(slot: VolunteerSlot) {
@@ -57,7 +58,8 @@ export async function getVolunteerCenterResult(): Promise<VolunteerCenterDataRes
       return {
         model: volunteerCenterDemo,
         source: 'demo',
-        reason: 'No readable family row was available.',
+        reason: 'Finish family setup before claiming volunteer slots.',
+        requiresSetup: true,
       }
     }
 

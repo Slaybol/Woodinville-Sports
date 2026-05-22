@@ -1,19 +1,14 @@
 'use client'
 
-import Link from 'next/link'
+import { useState } from 'react'
 import {
   Bus,
-  CalendarDays,
-  ChevronLeft,
   ChevronRight,
-  ClipboardList,
   Clock,
   Filter,
-  Home,
   MapPin,
-  Menu,
   Shirt,
-  Users,
+  CalendarDays,
 } from 'lucide-react'
 import type { CalendarEvent, CalendarEventType } from '@gridiron/shared'
 import { Badge } from '@/components/ui/badge'
@@ -33,14 +28,6 @@ interface CalendarContentProps {
 }
 
 const filters = ['All', 'Varsity', 'JV', 'C-Team', 'Deadlines']
-
-const navItems = [
-  { label: 'Huddle', href: '/', icon: Home },
-  { label: 'Actions', href: '/actions', icon: ClipboardList },
-  { label: 'Calendar', href: '/schedule', icon: CalendarDays },
-  { label: 'Volunteer', href: '/volunteers', icon: Users },
-  { label: 'More', href: '/profile', icon: Menu },
-]
 
 function eventBadge(type: CalendarEventType) {
   if (type === 'deadline') return 'warning'
@@ -82,26 +69,18 @@ function dayLabel(event: CalendarEvent) {
 }
 
 export function CalendarContent({ events, publishedSection, dataState }: CalendarContentProps) {
+  const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]>('All')
   const featured = events.find((event) => event.event_type === 'camp') || events[0]
+  const filteredEvents = events.filter((event) => {
+    if (activeFilter === 'Deadlines') return event.event_type === 'deadline'
+    if (activeFilter === 'Varsity') return event.audience_label.toLowerCase().includes('varsity')
+    if (activeFilter === 'JV') return event.audience_label.toLowerCase().includes('jv')
+    if (activeFilter === 'C-Team') return event.audience_label.toLowerCase().includes('c-team') || event.audience_label.toLowerCase().includes('c team')
+    return true
+  })
 
   return (
-    <div className="min-h-screen bg-ink-50 pb-20 md:pb-0">
-      <header className="falcons-header sticky top-0 z-50">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex h-9 w-9 items-center justify-center rounded-md bg-white/15 text-white">
-              <ChevronLeft size={20} />
-            </Link>
-            <div>
-              <p className="text-base font-bold leading-5">Calendar</p>
-              <p className="text-xs text-white/75">Practices, deadlines, camps, and travel</p>
-            </div>
-          </div>
-          <Badge className="hidden bg-white/15 text-white md:inline-flex">Updated May 17</Badge>
-        </div>
-      </header>
-
-      <main className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:px-8">
+    <main className="mx-auto grid max-w-[460px] gap-6 px-4 py-6">
         <section className="space-y-6">
           {dataState && (
             <div className="flex flex-wrap items-center gap-2">
@@ -119,8 +98,9 @@ export function CalendarContent({ events, publishedSection, dataState }: Calenda
               <Badge variant="outline">Coach calendar</Badge>
               <Badge variant="success">2026 season</Badge>
             </div>
-            <h1 className="text-3xl font-bold leading-9 text-ink-950">Upcoming logistics</h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-600">
+            <p className="brand-kicker">Calendar</p>
+            <h1 className="mt-2 font-display text-4xl leading-none text-ink-950">Upcoming logistics</h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-600">
               A working agenda for key deadlines, football activities, camp, and travel windows.
             </p>
           </div>
@@ -128,7 +108,13 @@ export function CalendarContent({ events, publishedSection, dataState }: Calenda
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
             <Filter size={16} className="shrink-0 text-ink-500" />
             {filters.map((filter) => (
-              <Button key={filter} size="sm" variant={filter === 'All' ? 'default' : 'outline'}>
+              <Button
+                key={filter}
+                type="button"
+                size="sm"
+                variant={filter === activeFilter ? 'default' : 'outline'}
+                onClick={() => setActiveFilter(filter)}
+              >
                 {filter}
               </Button>
             ))}
@@ -139,10 +125,10 @@ export function CalendarContent({ events, publishedSection, dataState }: Calenda
               <CardTitle>Agenda</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {events.map((event) => (
-                <Link
+              {filteredEvents.map((event) => (
+                <a
                   key={event.id}
-                  href={`/schedule?event=${encodeURIComponent(event.title)}`}
+                  href={`/schedule/${event.id}`}
                   className="flex min-h-16 gap-3 rounded-lg border border-ink-200 p-3 transition-colors hover:bg-ink-50"
                 >
                   <div className="w-14 shrink-0 text-center">
@@ -167,8 +153,13 @@ export function CalendarContent({ events, publishedSection, dataState }: Calenda
                     </div>
                   </div>
                   <ChevronRight size={18} className="mt-1 shrink-0 text-ink-400" />
-                </Link>
+                </a>
               ))}
+              {filteredEvents.length === 0 && (
+                <div className="rounded-lg border border-dashed border-ink-300 p-4 text-sm text-ink-600">
+                  No events match this filter right now.
+                </div>
+              )}
             </CardContent>
           </Card>
         </section>
@@ -177,11 +168,12 @@ export function CalendarContent({ events, publishedSection, dataState }: Calenda
           {featured && (
             <Card>
               <CardHeader>
+                <p className="brand-kicker">Featured event</p>
                 <div className="mb-1 flex flex-wrap items-center gap-2">
                   <Badge variant={eventBadge(featured.event_type) as any}>{eventTypeLabel(featured.event_type)}</Badge>
                   <Badge variant="outline">{featured.audience_label}</Badge>
                 </div>
-                <CardTitle>{featured.title}</CardTitle>
+                <CardTitle className="mt-1">{featured.title}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-3 text-sm">
@@ -237,7 +229,8 @@ export function CalendarContent({ events, publishedSection, dataState }: Calenda
 
           <Card>
             <CardHeader>
-              <CardTitle>{publishedSection?.title || 'Calendar note'}</CardTitle>
+              <p className="brand-kicker">Planning note</p>
+              <CardTitle className="mt-1">{publishedSection?.title || 'Calendar note'}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm leading-6 text-ink-600">
@@ -252,23 +245,5 @@ export function CalendarContent({ events, publishedSection, dataState }: Calenda
           </Card>
         </aside>
       </main>
-
-      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-ink-200 bg-white md:hidden">
-        <div className="grid h-16 grid-cols-5">
-          {navItems.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`flex flex-col items-center justify-center gap-1 text-[11px] font-bold ${
-                item.href === '/schedule' ? 'text-falcon-700' : 'text-ink-500'
-              }`}
-            >
-              <item.icon size={21} />
-              {item.label}
-            </Link>
-          ))}
-        </div>
-      </nav>
-    </div>
   )
 }

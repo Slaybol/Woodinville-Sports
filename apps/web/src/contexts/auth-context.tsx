@@ -7,7 +7,7 @@ interface Profile {
   id: string
   email: string
   full_name: string
-  role: 'coach' | 'team_parent' | 'parent'
+  role: 'coach' | 'team_parent' | 'parent' | 'player' | 'fgic_admin'
   phone?: string
   avatar_url?: string
   teams?: Array<{
@@ -102,7 +102,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             role,
             teams!inner(id, name, level)
           `)
-          .eq('user_id', userId)
+          .eq('profile_id', userId)
 
         if (!teamError && teamData) {
           teams = teamData.map((tm: any) => ({

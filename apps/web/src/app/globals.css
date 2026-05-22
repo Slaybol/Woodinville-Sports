@@ -8,20 +8,53 @@
     --foreground: 221 39% 11%;
     --card: 0 0% 100%;
     --card-foreground: 221 39% 11%;
-    --primary: 147 87% 24%;
+    --primary: 115 71% 32%;
     --primary-foreground: 0 0% 100%;
     --secondary: 220 14% 96%;
     --secondary-foreground: 221 39% 11%;
     --muted: 220 14% 96%;
     --muted-foreground: 220 9% 46%;
-    --accent: 143 61% 93%;
-    --accent-foreground: 146 84% 14%;
+    --accent: 115 31% 92%;
+    --accent-foreground: 115 71% 22%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 91%;
     --input: 216 12% 84%;
-    --ring: 147 87% 24%;
+    --ring: 115 71% 32%;
     --radius: 0.5rem;
+
+    --font-sans: 'Abel', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Oswald', 'Abel', ui-sans-serif, sans-serif;
+    --font-editorial: 'Alice', Georgia, serif;
+
+    --brand-green-950: #062807;
+    --brand-green-900: #093f0c;
+    --brand-green-800: #0d5110;
+    --brand-green-700: #116412;
+    --brand-green-600: #157915;
+    --brand-green-500: #198d17;
+    --brand-green-100: #dcebdc;
+    --brand-green-50: #eff7ef;
+
+    --brand-navy-950: #060d28;
+    --brand-navy-900: #0a143d;
+    --brand-navy-800: #12225d;
+    --brand-navy-700: #1a2f74;
+    --brand-navy-100: #d9e1f4;
+    --brand-navy-50: #edf1fb;
+
+    --brand-gold-500: #b89a43;
+    --brand-gold-100: #efe4b9;
+
+    --ink-950: #111827;
+    --ink-800: #1f2937;
+    --ink-700: #374151;
+    --ink-600: #4b5563;
+    --ink-500: #6b7280;
+    --ink-300: #d1d5db;
+    --ink-200: #e5e7eb;
+    --ink-100: #f3f4f6;
+    --ink-50: #f9fafb;
   }
 
   .dark {
@@ -29,19 +62,19 @@
     --foreground: 220 14% 96%;
     --card: 215 28% 17%;
     --card-foreground: 220 14% 96%;
-    --primary: 146 75% 37%;
+    --primary: 115 71% 32%;
     --primary-foreground: 0 0% 100%;
     --secondary: 215 28% 17%;
     --secondary-foreground: 220 14% 96%;
     --muted: 215 28% 17%;
     --muted-foreground: 220 9% 64%;
-    --accent: 146 82% 20%;
-    --accent-foreground: 143 61% 93%;
+    --accent: 225 52% 24%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 61%;
     --destructive-foreground: 0 0% 100%;
     --border: 215 16% 27%;
     --input: 215 16% 27%;
-    --ring: 146 75% 37%;
+    --ring: 115 71% 32%;
   }
 }
 
@@ -51,12 +84,28 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
+    letter-spacing: 0.01em;
+  }
+
+  h1,
+  h2,
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.01em;
+  }
+
+  .font-editorial {
+    font-family: var(--font-editorial);
   }
 }
 
 @layer components {
   .falcons-header {
-    @apply bg-falcon-900 text-white;
+    @apply text-white;
+    background-color: var(--brand-green-900);
+    background-image:
+      linear-gradient(180deg, rgba(9, 63, 12, 0.98) 0%, rgba(13, 81, 16, 0.98) 100%),
+      linear-gradient(90deg, rgba(10, 20, 61, 0.18) 0%, rgba(255, 255, 255, 0) 55%);
   }
   
   .falcons-card {
@@ -64,7 +113,8 @@
   }
   
   .falcons-accent {
-    @apply bg-falcon-50 border-falcon-100;
+    @apply border-falcon-100;
+    background-color: rgba(239, 247, 239, 0.92);
   }
   
   .falcons-button {
@@ -73,5 +123,13 @@
   
   .falcons-achievement {
     @apply bg-falcon-50 border-falcon-100;
+  }
+
+  .brand-kicker {
+    @apply font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-falcon-700;
+  }
+
+  .brand-page-title {
+    @apply font-display text-3xl leading-none text-ink-950 md:text-[2.2rem];
   }
 }

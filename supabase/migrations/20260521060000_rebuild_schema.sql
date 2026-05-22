@@ -637,13 +637,13 @@ create policy "family action status visible to family and admins"
 on public.family_action_status for select
 using (public.is_family_member(family_id) or public.is_program_admin());
 
+create policy "family can insert own action status"
+on public.family_action_status for insert
+with check (public.is_family_member(family_id));
+
 create policy "family can update own action status"
 on public.family_action_status for update
 using (public.is_family_member(family_id))
-with check (public.is_family_member(family_id));
-
-create policy "family can insert own action status"
-on public.family_action_status for insert
 with check (public.is_family_member(family_id));
 
 create policy "admins can manage family action status"

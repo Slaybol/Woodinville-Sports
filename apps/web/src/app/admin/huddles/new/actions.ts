@@ -3,7 +3,7 @@
 import type { ActionImportance } from '@gridiron/shared'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { requireAdminAccess } from '@/lib/auth/admin'
 
 function redirectWithStatus(status: string, message?: string) {
   const params = new URLSearchParams({ status })
@@ -101,14 +101,10 @@ function parseDraftSections(formData: FormData): DraftSectionInput[] {
 }
 
 async function getAuthenticatedAdminUserId() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirectWithStatus('auth_required', 'Sign in with an admin account before saving a draft.')
-  }
+  const { supabase, user } = await requireAdminAccess({
+    onUnauthenticated: 'redirect-to-auth',
+    onUnauthorized: 'redirect-home',
+  })
 
   const userId = user?.id
 

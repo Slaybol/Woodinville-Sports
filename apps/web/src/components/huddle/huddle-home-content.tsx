@@ -5,15 +5,13 @@ import {
   AlertTriangle,
   CalendarDays,
   ChevronRight,
-  ClipboardList,
   Clock,
   ExternalLink,
-  Home,
   MapPin,
-  Menu,
   ShieldCheck,
   Trophy,
   Users,
+  ClipboardList,
 } from 'lucide-react'
 import type { ActionItem, HuddleHomeModel } from '@gridiron/shared'
 import { Badge } from '@/components/ui/badge'
@@ -24,14 +22,6 @@ interface HuddleHomeContentProps {
   model: HuddleHomeModel
   preview?: boolean
 }
-
-const navItems = [
-  { label: 'Huddle', href: '/', previewHref: '/preview/huddle', icon: Home },
-  { label: 'Actions', href: '/actions', previewHref: '/actions', icon: ClipboardList },
-  { label: 'Calendar', href: '/schedule', previewHref: '/schedule', icon: CalendarDays },
-  { label: 'Volunteer', href: '/volunteers', previewHref: '/volunteers', icon: Users },
-  { label: 'More', href: '/profile', previewHref: '/profile', icon: Menu },
-]
 
 function isUrgentAction(action: ActionItem) {
   return action.due_label === 'Past due' || action.title === 'FinalForms Registration'
@@ -69,76 +59,120 @@ export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentP
   const highlights = (model.sections.find((section) => section.section_type === 'highlights')?.metadata
     .highlights || []) as string[]
   const primaryUrgent = urgent_actions[0]
-  const huddleHref = preview ? '/preview/huddle' : '/'
+  const actionCompletionPercent =
+    family_progress && family_progress.action_items_total > 0
+      ? Math.round((family_progress.action_items_complete / family_progress.action_items_total) * 100)
+      : 0
+  const volunteerCompletionPercent =
+    family_progress && family_progress.volunteer_hours_goal > 0
+      ? Math.min(Math.round((family_progress.volunteer_hours_complete / family_progress.volunteer_hours_goal) * 100), 100)
+      : 0
 
   return (
-    <>
-      <nav className="hidden border-b border-ink-200 bg-white md:block">
-        <div className="mx-auto flex h-12 max-w-6xl items-center gap-2 px-4 sm:px-6 lg:px-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.label}
-              href={preview ? item.previewHref : item.href}
-              className="flex h-9 items-center gap-2 rounded-md px-3 text-sm font-bold text-ink-700 hover:bg-ink-100 hover:text-ink-950"
-            >
-              <item.icon size={16} />
-              {item.label}
-            </Link>
-          ))}
-        </div>
-      </nav>
-
-      <main className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:px-8">
-        <section className="space-y-6">
-          <div>
-            <div className="mb-2 flex flex-wrap items-center gap-2">
-              <Badge variant="success">Published</Badge>
-              <Badge variant="outline">{huddle.date_range.replace(', 2026', '')}</Badge>
-              {preview && <Badge variant="info">Preview</Badge>}
-            </div>
-            <h1 className="text-3xl font-bold leading-9 text-ink-950">{huddle.title}</h1>
-            {huddle.summary && (
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-600">{huddle.summary}</p>
-            )}
+    <main className="mx-auto max-w-[460px] px-4 py-6">
+      <section className="grid gap-4">
+        <div className="rounded-xl border border-ink-200 bg-white px-5 py-5 shadow-card sm:px-6">
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <Badge variant="success">Published</Badge>
+            <Badge variant="outline">{huddle.date_range.replace(', 2026', '')}</Badge>
+            {preview && <Badge variant="info">Preview</Badge>}
           </div>
-
-          {primaryUrgent && (
-            <Card className="border-statusRed-100 bg-red-50">
-              <CardContent className="pt-4 sm:pt-5">
-                <div className="flex gap-3">
-                  <AlertTriangle className="mt-0.5 shrink-0 text-statusRed-600" size={20} />
-                  <div>
-                    <div className="mb-1 flex flex-wrap items-center gap-2">
-                      <p className="font-bold text-statusRed-600">Urgent: {primaryUrgent.title}</p>
-                      {primaryUrgent.due_label && <Badge variant="destructive">{primaryUrgent.due_label}</Badge>}
-                    </div>
-                    <p className="text-sm leading-6 text-red-900">{primaryUrgent.description}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <p className="brand-kicker">This Week&apos;s Huddle</p>
+          <h1 className="mt-2 font-display text-4xl leading-none text-ink-950 sm:text-[2.8rem]">
+            {huddle.title}
+          </h1>
+          {huddle.summary && (
+            <p className="mt-4 max-w-3xl text-[15px] leading-7 text-ink-700">{huddle.summary}</p>
           )}
+          {primaryUrgent && (
+            <div className="mt-5 flex flex-col gap-3 border-t border-ink-200 pt-5 sm:flex-row sm:items-end sm:justify-between">
+              <div className="min-w-0">
+                <div className="mb-2 flex flex-wrap items-center gap-2">
+                  <Badge variant="destructive">Next up</Badge>
+                  {primaryUrgent.due_label && <Badge variant="warning">{primaryUrgent.due_label}</Badge>}
+                </div>
+                <p className="font-display text-2xl leading-none text-ink-950">{primaryUrgent.title}</p>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-600">{primaryUrgent.description}</p>
+              </div>
+              <div className="flex gap-2">
+                <Link href="/actions">
+                  <Button size="sm">
+                    Open Actions
+                    <ChevronRight size={15} className="ml-1" />
+                  </Button>
+                </Link>
+                {primaryUrgent.external_url && (
+                  <a href={primaryUrgent.external_url} target="_blank" rel="noreferrer">
+                    <Button variant="outline" size="sm">
+                      Open Link
+                      <ExternalLink size={14} className="ml-2" />
+                    </Button>
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
+        {family_progress && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Family Progress</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <div className="mb-2 flex items-center justify-between text-sm">
+                  <span className="font-bold text-ink-950">Action items</span>
+                  <span className="text-ink-600">
+                    {family_progress.action_items_complete} of {family_progress.action_items_total} complete
+                  </span>
+                </div>
+                <div className="h-2 rounded-full bg-ink-100">
+                  <div className="h-2 rounded-full bg-falcon-700" style={{ width: `${actionCompletionPercent}%` }} />
+                </div>
+              </div>
+              <div>
+                <div className="mb-2 flex items-center justify-between text-sm">
+                  <span className="font-bold text-ink-950">Volunteer hours</span>
+                  <span className="text-ink-600">
+                    {family_progress.volunteer_hours_complete} of {family_progress.volunteer_hours_goal} hours
+                  </span>
+                </div>
+                <div className="h-2 rounded-full bg-ink-100">
+                  <div className="h-2 rounded-full bg-gold-500" style={{ width: `${volunteerCompletionPercent}%` }} />
+                </div>
+              </div>
+              <div className="rounded-lg bg-ink-50 p-3 text-sm leading-6 text-ink-700">
+                Your weekly command center should make deadlines and logistics obvious at a glance.
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </section>
+
+      <section className="mt-6 grid gap-6">
+        <div className="space-y-6">
           <Card>
             <CardHeader className="flex-row items-center justify-between">
               <div>
-                <CardTitle>This Week&apos;s Playbook</CardTitle>
+                <p className="brand-kicker">Actions</p>
+                <CardTitle className="mt-1">This Week&apos;s Playbook</CardTitle>
                 <p className="text-sm text-ink-600">Required family action items and deadlines.</p>
               </div>
-              <Link href="/actions" className="hidden md:block">
+              <Link href="/actions">
                 <Button variant="outline" size="sm">
                   View All
                   <ChevronRight size={16} className="ml-1" />
                 </Button>
               </Link>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-2">
               {urgent_actions.map((action) => (
                 <div
                   key={action.id}
-                  className="flex min-h-16 items-start gap-3 rounded-lg border border-ink-200 bg-white p-3"
+                  className="flex min-h-16 items-start gap-3 rounded-lg border border-ink-200 bg-white px-3 py-3"
                 >
-                  <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md ${actionTone(action)}`}>
+                  <div className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-md ${actionTone(action)}`}>
                     {actionIcon(action)}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -154,7 +188,7 @@ export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentP
                       href={action.external_url}
                       target="_blank"
                       rel="noreferrer"
-                      className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-md text-falcon-700 hover:bg-falcon-50 md:flex"
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-falcon-700 hover:bg-falcon-50"
                       aria-label={`Open ${action.title}`}
                     >
                       <ExternalLink size={16} />
@@ -167,65 +201,27 @@ export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentP
 
           <Card>
             <CardHeader>
-              <CardTitle>Program Highlights</CardTitle>
+              <p className="brand-kicker">Program</p>
+              <CardTitle className="mt-1">Program Highlights</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {highlights.map((highlight) => (
                 <div key={highlight} className="flex gap-3 text-sm leading-6 text-ink-700">
                   <Trophy size={17} className="mt-1 shrink-0 text-gold-500" />
-                  <p>{highlight}</p>
+                  <p className="font-editorial text-[15px] leading-7 text-ink-700">{highlight}</p>
                 </div>
               ))}
             </CardContent>
           </Card>
-        </section>
+        </div>
 
         <aside className="space-y-6">
-          {family_progress && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Family Progress</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <div className="mb-2 flex items-center justify-between text-sm">
-                    <span className="font-bold text-ink-950">Action items</span>
-                    <span className="text-ink-600">
-                      {family_progress.action_items_complete} of {family_progress.action_items_total} complete
-                    </span>
-                  </div>
-                  <div className="h-2 rounded-full bg-ink-100">
-                    <div
-                      className="h-2 rounded-full bg-falcon-700"
-                      style={{
-                        width: `${(family_progress.action_items_complete / family_progress.action_items_total) * 100}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="mb-2 flex items-center justify-between text-sm">
-                    <span className="font-bold text-ink-950">Volunteer hours</span>
-                    <span className="text-ink-600">
-                      {family_progress.volunteer_hours_complete} of {family_progress.volunteer_hours_goal} hours
-                    </span>
-                  </div>
-                  <div className="h-2 rounded-full bg-ink-100">
-                    <div
-                      className="h-2 rounded-full bg-gold-500"
-                      style={{
-                        width: `${(family_progress.volunteer_hours_complete / family_progress.volunteer_hours_goal) * 100}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
           <Card>
             <CardHeader className="flex-row items-center justify-between">
-              <CardTitle>This Week</CardTitle>
+              <div>
+                <p className="brand-kicker">Calendar</p>
+                <CardTitle className="mt-1">This Week</CardTitle>
+              </div>
               <Link href="/schedule" className="text-sm font-bold text-falcon-700">
                 Calendar
               </Link>
@@ -256,7 +252,10 @@ export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentP
 
           <Card>
             <CardHeader className="flex-row items-center justify-between">
-              <CardTitle>Volunteer Needs</CardTitle>
+              <div>
+                <p className="brand-kicker">Volunteer</p>
+                <CardTitle className="mt-1">Volunteer Needs</CardTitle>
+              </div>
               <Link href="/volunteers" className="text-sm font-bold text-falcon-700">
                 Open slots
               </Link>
@@ -288,27 +287,7 @@ export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentP
             </CardContent>
           </Card>
         </aside>
-      </main>
-
-      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-ink-200 bg-white md:hidden">
-        <div className="grid h-16 grid-cols-5">
-          {navItems.map((item) => {
-            const href = preview ? item.previewHref : item.href
-            return (
-              <Link
-                key={item.label}
-                href={href}
-                className={`flex flex-col items-center justify-center gap-1 text-[11px] font-bold ${
-                  href === huddleHref ? 'text-falcon-700' : 'text-ink-500'
-                }`}
-              >
-                <item.icon size={21} />
-                {item.label}
-              </Link>
-            )
-          })}
-        </div>
-      </nav>
-    </>
+      </section>
+    </main>
   )
 }

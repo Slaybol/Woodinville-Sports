@@ -1,15 +1,11 @@
 'use client'
 
-import Link from 'next/link'
+import { useState } from 'react'
 import {
   CalendarDays,
   CheckCircle2,
-  ChevronLeft,
-  ClipboardList,
   Clock,
-  Home,
   MapPin,
-  Menu,
   Plus,
   Utensils,
   Users,
@@ -35,14 +31,6 @@ interface VolunteerContentProps {
 }
 
 const filters = ['All', 'Game day', 'Meals', 'Camp', 'Fundraising']
-
-const navItems = [
-  { label: 'Huddle', href: '/', icon: Home },
-  { label: 'Actions', href: '/actions', icon: ClipboardList },
-  { label: 'Calendar', href: '/schedule', icon: CalendarDays },
-  { label: 'Volunteer', href: '/volunteers', icon: Users },
-  { label: 'More', href: '/profile', icon: Menu },
-]
 
 function categoryLabel(category: VolunteerCategory) {
   switch (category) {
@@ -71,34 +59,22 @@ export function VolunteerContent({
   publishedSection,
   dataState,
 }: VolunteerContentProps) {
+  const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]>('All')
   const remaining = Math.max(model.volunteer_hours_goal - model.volunteer_hours_complete, 0)
   const percent =
     model.volunteer_hours_goal === 0
       ? 0
       : Math.min(Math.round((model.volunteer_hours_complete / model.volunteer_hours_goal) * 100), 100)
+  const filteredSlots = model.slots.filter((slot) => {
+    if (activeFilter === 'Game day') return slot.category === 'game_day'
+    if (activeFilter === 'Meals') return slot.category === 'meals'
+    if (activeFilter === 'Camp') return slot.category === 'camp'
+    if (activeFilter === 'Fundraising') return slot.category === 'fundraising'
+    return true
+  })
 
   return (
-    <div className="min-h-screen bg-ink-50 pb-20 md:pb-0">
-      {!preview && (
-        <header className="falcons-header sticky top-0 z-50">
-          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-3">
-              <Link href="/" className="flex h-9 w-9 items-center justify-center rounded-md bg-white/15 text-white">
-                <ChevronLeft size={20} />
-              </Link>
-              <div>
-                <p className="text-base font-bold leading-5">Volunteer</p>
-                <p className="text-xs text-white/75">Family hours and open roles</p>
-              </div>
-            </div>
-            <Badge className="hidden bg-white/15 text-white md:inline-flex">
-              {model.volunteer_hours_complete} of {model.volunteer_hours_goal} hours
-            </Badge>
-          </div>
-        </header>
-      )}
-
-      <main className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:px-8">
+    <main className="mx-auto grid max-w-[460px] gap-6 px-4 py-6">
         <section className="space-y-6">
           {dataState && (
             <div className="flex flex-wrap items-center gap-2">
@@ -116,8 +92,9 @@ export function VolunteerContent({
               <Badge variant="success">{model.volunteer_hours_complete} hours credited</Badge>
               <Badge variant="warning">{remaining} hours remaining</Badge>
             </div>
-            <h1 className="text-3xl font-bold leading-9 text-ink-950">Volunteer opportunities</h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-600">
+            <p className="brand-kicker">Volunteer</p>
+            <h1 className="mt-2 font-display text-4xl leading-none text-ink-950">Volunteer opportunities</h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-600">
               Track your family&apos;s volunteer progress and claim roles that help the program run.
             </p>
           </div>
@@ -141,7 +118,13 @@ export function VolunteerContent({
 
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
             {filters.map((filter) => (
-              <Button key={filter} size="sm" variant={filter === 'All' ? 'default' : 'outline'}>
+              <Button
+                key={filter}
+                type="button"
+                size="sm"
+                variant={filter === activeFilter ? 'default' : 'outline'}
+                onClick={() => setActiveFilter(filter)}
+              >
                 {filter}
               </Button>
             ))}
@@ -153,19 +136,18 @@ export function VolunteerContent({
                 <CardTitle>Open roles</CardTitle>
                 <p className="text-sm text-ink-600">Claim a role or contact the coordinator with questions.</p>
               </div>
-              <Button size="sm" variant="outline" className="hidden md:inline-flex">
-                <Plus size={15} className="mr-1" />
-                Interest
-              </Button>
+              <div className="inline-flex items-center rounded-md border border-ink-200 px-3 py-2 text-xs font-bold text-ink-500">
+                Filter roles below
+              </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              {model.slots.map((slot) => {
+              {filteredSlots.map((slot) => {
                 const openSlots = Math.max(slot.slots_needed - slot.slots_filled, 0)
                 const isSignedUp = familyId ? slot.signed_up_family_ids.includes(familyId) : false
 
                 return (
                   <div key={slot.id} className="rounded-lg border border-ink-200 p-3">
-                    <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <div className="flex flex-col gap-3">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
                           <h2 className="font-bold text-ink-950">{slot.title}</h2>
@@ -182,16 +164,16 @@ export function VolunteerContent({
                           <input type="hidden" name="slot_id" value={slot.id} />
                           <input type="hidden" name="hours_credited" value={slot.hour_credit} />
                           <input type="hidden" name="action_type" value={isSignedUp ? 'cancel' : 'signup'} />
-                          <Button size="sm" variant={isSignedUp ? 'outline' : 'default'} className="w-full md:w-auto">
+                          <Button size="sm" variant={isSignedUp ? 'outline' : 'default'} className="w-full">
                             {isSignedUp ? 'Cancel' : 'Sign Up'}
                           </Button>
                         </form>
                       ) : (
-                        <Button size="sm" className="w-full md:w-auto">Sign Up</Button>
+                        <Button size="sm" className="w-full">Sign Up</Button>
                       )}
                     </div>
 
-                    <div className="mt-3 grid gap-2 text-sm text-ink-600 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="mt-3 grid gap-2 text-sm text-ink-600 sm:grid-cols-2">
                       <span className="flex items-center gap-1">
                         <CalendarDays size={14} />
                         {slot.display_date || 'Date TBD'}
@@ -212,6 +194,11 @@ export function VolunteerContent({
                   </div>
                 )
               })}
+              {filteredSlots.length === 0 && (
+                <div className="rounded-lg border border-dashed border-ink-300 p-4 text-sm text-ink-600">
+                  No volunteer roles match this filter right now.
+                </div>
+              )}
             </CardContent>
           </Card>
         </section>
@@ -219,7 +206,8 @@ export function VolunteerContent({
         <aside className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Claimed shifts</CardTitle>
+              <p className="brand-kicker">Confirmed</p>
+              <CardTitle className="mt-1">Claimed shifts</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {model.claimed_shifts.map((shift) => (
@@ -238,7 +226,8 @@ export function VolunteerContent({
 
           <Card>
             <CardHeader>
-              <CardTitle>{publishedSection?.title || 'Coordinator notes'}</CardTitle>
+              <p className="brand-kicker">Coordinator note</p>
+              <CardTitle className="mt-1">{publishedSection?.title || 'Coordinator notes'}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm leading-6 text-ink-600">
               <p>
@@ -255,25 +244,5 @@ export function VolunteerContent({
           </Card>
         </aside>
       </main>
-
-      {!preview && (
-        <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-ink-200 bg-white md:hidden">
-          <div className="grid h-16 grid-cols-5">
-            {navItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`flex flex-col items-center justify-center gap-1 text-[11px] font-bold ${
-                  item.href === '/volunteers' ? 'text-falcon-700' : 'text-ink-500'
-                }`}
-              >
-                <item.icon size={21} />
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </nav>
-      )}
-    </div>
   )
 }

@@ -72,7 +72,12 @@ export async function getCurrentHuddleHomeResult(): Promise<HuddleHomeDataResult
 
     const actionItems = (actions || []) as ActionItem[]
     const family = await resolveReadableFamily(supabase)
-    let familyProgress = demoFamilyProgress
+    let familyProgress = buildFamilyProgressSummary({
+      actionItemsComplete: 0,
+      actionItemsTotal: actionItems.length,
+      volunteerSignups: [],
+      volunteerHoursGoal: demoFamilyProgress.volunteer_hours_goal,
+    })
 
     if (family) {
       const [{ data: statuses }, { data: volunteerSignups }] = await Promise.all([
