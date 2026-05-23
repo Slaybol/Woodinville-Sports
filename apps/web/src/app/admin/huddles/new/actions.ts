@@ -5,10 +5,13 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { requireAdminAccess } from '@/lib/auth/admin'
 
-function redirectWithStatus(status: string, message?: string) {
+function redirectWithStatus(status: string, message?: string, huddleId?: string) {
   const params = new URLSearchParams({ status })
   if (message) {
     params.set('message', message)
+  }
+  if (huddleId) {
+    params.set('huddle', huddleId)
   }
 
   redirect(`/admin/huddles/new?${params.toString()}`)
@@ -277,15 +280,15 @@ async function persistHuddle(formData: FormData, nextStatus: 'draft' | 'publishe
   revalidatePath('/schedule')
   revalidatePath('/volunteers')
 
-  return { nextStatus }
+  return { nextStatus, huddleId }
 }
 
 export async function saveDraftHuddle(formData: FormData) {
-  await persistHuddle(formData, 'draft')
-  redirectWithStatus('saved')
+  const { huddleId } = await persistHuddle(formData, 'draft')
+  redirectWithStatus('saved', undefined, huddleId)
 }
 
 export async function publishHuddle(formData: FormData) {
-  await persistHuddle(formData, 'published')
-  redirectWithStatus('published')
+  const { huddleId } = await persistHuddle(formData, 'published')
+  redirectWithStatus('published', undefined, huddleId)
 }

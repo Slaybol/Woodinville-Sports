@@ -117,22 +117,27 @@ function statusTone(status?: string) {
 export default async function HuddleEditorPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ status?: string; message?: string }>
+  searchParams?: Promise<{ status?: string; message?: string; huddle?: string }>
 }) {
   const params = (await searchParams) || {}
   const supabase = await createClient()
 
-  const [{ data: drafts }, { data: teams }] = await Promise.all([
+  const [{ data: teams }, selectedHuddleResult, latestDraftResult] = await Promise.all([
+    supabase.from('teams').select('id, name, level, season'),
+    params.huddle
+      ? supabase.from('huddles').select('*').eq('id', params.huddle).maybeSingle()
+      : Promise.resolve({ data: null }),
     supabase
       .from('huddles')
       .select('*')
       .eq('status', 'draft')
       .order('updated_at', { ascending: false })
-      .limit(1),
-    supabase.from('teams').select('id, name, level, season'),
+      .limit(1)
+      .maybeSingle(),
   ])
 
-  const draft = drafts?.[0]
+  const draft = selectedHuddleResult.data || latestDraftResult.data
+  const isPublishedView = draft?.status === 'published'
   const { data: draftActions } = draft
     ? await supabase
         .from('action_items')
@@ -239,7 +244,7 @@ export default async function HuddleEditorPage({
 
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
-              <Badge variant="warning">Draft</Badge>
+              <Badge variant={isPublishedView ? 'success' : 'warning'}>{isPublishedView ? 'Published' : 'Draft'}</Badge>
               <Badge variant="outline">{draft?.date_range || 'May 24-31'}</Badge>
               <Badge variant="destructive">2 warnings</Badge>
             </div>
