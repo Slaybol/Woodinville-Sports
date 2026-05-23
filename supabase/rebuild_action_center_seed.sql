@@ -11,7 +11,7 @@ insert into public.families (
 )
 values (
   '80000000-0000-0000-0000-000000000001',
-  'Sabol family',
+  'Bergerin Family',
   null,
   'demo_preview'
 )
@@ -43,7 +43,7 @@ values
     '90000000-0000-0000-0000-000000000002',
     '80000000-0000-0000-0000-000000000001',
     '40000000-0000-0000-0000-000000000002',
-    'in_progress',
+    'not_started',
     null,
     null,
     null
@@ -61,9 +61,9 @@ values
     '90000000-0000-0000-0000-000000000004',
     '80000000-0000-0000-0000-000000000001',
     '40000000-0000-0000-0000-000000000004',
-    'complete',
+    'not_started',
     null,
-    '2026-05-18 09:00:00-07',
+    null,
     null
   )
 on conflict (family_id, action_item_id) do update

@@ -29,35 +29,35 @@ const sections = [
     label: "This Week's Playbook",
     status: 'Ready',
     icon: ClipboardList,
-    defaultBody: 'Required family action items and deadlines.',
+    defaultBody: 'Register Online with CWU. Pay Camp Fee to Woodinville High School. Submit Hard Copies of Forms.',
   },
   {
     section_type: 'calendar',
     label: 'Calendar Highlights',
     status: 'Needs review',
     icon: CalendarDays,
-    defaultBody: 'Spring Football begins soon. CWU Camp is June 20-23. Suggested summer travel window is July 27-August 7.',
+    defaultBody: 'Spring Practices : June 1st - 18th - More Details Coming.\nCWU Camp : June 20th - 23rd - Register Here.\nMini Camp : July 21st - 23rd @ WHS Football Field.',
   },
   {
     section_type: 'volunteer',
     label: 'Volunteer Asks',
     status: 'Ready',
     icon: Users,
-    defaultBody: 'Concessions planning and team meal support are the first volunteer needs to fill.',
+    defaultBody: 'It takes a huge team behind the scenes to support Woodinville High School Football. We ask that each family consider volunteering at least 10 hours per season to help keep the program running strong.',
   },
   {
     section_type: 'highlights',
     label: 'Program Highlights',
     status: 'Ready',
     icon: Megaphone,
-    defaultBody: 'Gervais training turnout has been strong this offseason.\nWoodinville Baseball won KingCo and District championships.\nJonah Leavengood won the KingCo 400 meter title for Woodinville Track.',
+    defaultBody: '2019 4A ACADEMIC STATE CHAMPIONS (FOOTBALL)\n3-PEAT 4A STATE SEMI-FINALISTS\n3-PEAT KINGCO 4A CHAMPIONS',
   },
 ]
 
 const defaultDraftActions = [
   {
     title: 'FinalForms Registration',
-    description: 'Complete Northshore School District athletics forms and select both Summer Football and Fall Football.',
+    description: 'In order to participate in the first day of summer conditioning/practice, tryouts or regular season practice, a FinalForms registration must be completed by both parent and student and a current sports physical must be on file with the WHS Athletic Office.',
     importance: 'required' as ActionImportance,
     due_label: 'Due May 26',
     audience_label: 'All players',
@@ -65,15 +65,15 @@ const defaultDraftActions = [
   },
   {
     title: 'CWU Camp Registration',
-    description: 'Follow the three-step registration process on the Woodinville Football CWU Camp page.',
+    description: 'Complete all 3 registration steps below.',
     importance: 'required' as ActionImportance,
     due_label: 'Due June 3',
     audience_label: 'Camp attendees',
     external_url: 'https://www.woodinvillefootball.com/cwucamp',
   },
   {
-    title: 'FGIC Membership',
-    description: 'Membership dues help fund the player experience on and off the field.',
+    title: '2026 FGIC Membership',
+    description: '$500/Family FGIC Membership dues help support the many resources that make the Woodinville High School Football program successful.',
     importance: 'family' as ActionImportance,
     due_label: 'Past due',
     audience_label: 'All families',
@@ -512,7 +512,7 @@ export default async function HuddleEditorPage({
                   Volunteer asks
                 </div>
                 <p className="text-sm leading-6 text-ink-600">
-                  {previewVolunteer?.body || 'Concessions planning and team meal support are the first volunteer needs to fill.'}
+                  {previewVolunteer?.body || 'It takes a huge team behind the scenes to support Woodinville High School Football. We ask that each family consider volunteering at least 10 hours per season to help keep the program running strong.'}
                 </p>
               </div>
 

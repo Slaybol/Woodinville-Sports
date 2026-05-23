@@ -1,6 +1,6 @@
 import type { ActionItem, CalendarEvent, Huddle, HuddleHomeModel, HuddleSection, VolunteerSignup, VolunteerSlot } from '@gridiron/shared'
 import { demoFamilyProgress, huddleHomeDemo } from '@/lib/demo-data'
-import { buildFamilyProgressSummary, resolveReadableFamily } from '@/lib/data/family'
+import { buildFamilyProgressSummary, getAuthenticatedUserId, resolveReadableFamily } from '@/lib/data/family'
 import { createClient } from '@/lib/supabase/server'
 
 export interface HuddleHomeDataResult {
@@ -9,9 +9,10 @@ export interface HuddleHomeDataResult {
   reason?: string
 }
 
-export async function getCurrentHuddleHomeResult(): Promise<HuddleHomeDataResult> {
+export async function getCurrentHuddleHomeResult(existingSupabase?: Awaited<ReturnType<typeof createClient>>): Promise<HuddleHomeDataResult> {
   try {
-    const supabase = await createClient()
+    const supabase = existingSupabase || await createClient()
+    const userId = await getAuthenticatedUserId(supabase)
 
     const { data: huddle, error: huddleError } = await supabase
       .from('huddles')
@@ -71,7 +72,7 @@ export async function getCurrentHuddleHomeResult(): Promise<HuddleHomeDataResult
     }
 
     const actionItems = (actions || []) as ActionItem[]
-    const family = await resolveReadableFamily(supabase)
+    const family = await resolveReadableFamily(supabase, userId)
     let familyProgress = buildFamilyProgressSummary({
       actionItemsComplete: 0,
       actionItemsTotal: actionItems.length,

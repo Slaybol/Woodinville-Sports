@@ -61,7 +61,7 @@ export async function getFamilyProfileData(): Promise<FamilyProfileDataResult | 
     return null
   }
 
-  const family = await resolveReadableFamily(supabase)
+  const family = await resolveReadableFamily(supabase, user.id)
 
   if (!family) {
     return {

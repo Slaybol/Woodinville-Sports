@@ -7,7 +7,7 @@ import type {
   VolunteerSignup,
 } from '@gridiron/shared'
 import { actionCenterDemo } from '@/lib/demo-data'
-import { buildFamilyProgressSummary, resolveReadableFamily } from '@/lib/data/family'
+import { buildFamilyProgressSummary, getAuthenticatedUserId, resolveReadableFamily } from '@/lib/data/family'
 import { createClient } from '@/lib/supabase/server'
 
 export interface ActionCenterDataResult {
@@ -32,24 +32,22 @@ function buildProgress(
 export async function getActionCenterResult(): Promise<ActionCenterDataResult> {
   try {
     const supabase = await createClient()
+    const userId = await getAuthenticatedUserId(supabase)
 
-    const [{ data: currentHuddle }] = await Promise.all([
-      supabase
-        .from('huddles')
-        .select('id')
-        .eq('status', 'published')
-        .order('starts_on', { ascending: false, nullsFirst: false })
-        .limit(1)
-        .maybeSingle(),
-    ])
-    const [{ data: actions, error: actionsError }] = await Promise.all([
-      supabase
-        .from('action_items')
-        .select('*')
-        .eq('huddle_id', currentHuddle?.id || '')
-        .order('due_at', { ascending: true, nullsFirst: false }),
-    ])
-    const family = await resolveReadableFamily(supabase)
+    const { data: currentHuddle } = await supabase
+      .from('huddles')
+      .select('id')
+      .eq('status', 'published')
+      .order('starts_on', { ascending: false, nullsFirst: false })
+      .limit(1)
+      .maybeSingle()
+
+    const { data: actions, error: actionsError } = await supabase
+      .from('action_items')
+      .select('*')
+      .eq('huddle_id', currentHuddle?.id || '')
+      .order('due_at', { ascending: true, nullsFirst: false })
+    const family = await resolveReadableFamily(supabase, userId)
 
     if (actionsError || !actions || actions.length === 0) {
       return {

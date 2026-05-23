@@ -495,3 +495,7 @@ Creating turbopack project {
  GET / 200 in 391ms (compile: 5ms, render: 387ms)
  GET /profile 200 in 386ms (compile: 83ms, render: 304ms)
  GET / 200 in 228ms (compile: 5ms, render: 222ms)
+✓ Compiled in 61ms
+✓ Compiled in 30ms
+✓ Compiled in 44ms
+✓ Compiled in 6ms

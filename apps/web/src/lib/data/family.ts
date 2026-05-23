@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import type { Family, FamilyProgressSummary, VolunteerSignup } from '@gridiron/shared'
 
 interface SupabaseAuthLike {
@@ -23,18 +24,24 @@ interface FamilyMembershipRow {
   family_id?: string
 }
 
-export async function resolveReadableFamily(supabase: unknown): Promise<Family | null> {
+export const getAuthenticatedUserId = cache(async (supabase: unknown): Promise<string | null> => {
   const authClient = supabase as SupabaseAuthLike
-  const queryClient = supabase as SupabaseQueryLike
   const {
     data: { user },
   } = await authClient.auth.getUser()
 
-  if (user?.id) {
+  return user?.id || null
+})
+
+export async function resolveReadableFamily(supabase: unknown, userId?: string | null): Promise<Family | null> {
+  const queryClient = supabase as SupabaseQueryLike
+  const resolvedUserId = userId === undefined ? await getAuthenticatedUserId(supabase) : userId
+
+  if (resolvedUserId) {
     const { data: membership } = await queryClient
       .from('family_members')
       .select('family_id')
-      .eq('profile_id', user.id)
+      .eq('profile_id', resolvedUserId)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle()
@@ -56,7 +63,7 @@ export async function resolveReadableFamily(supabase: unknown): Promise<Family |
     const { data: primaryContactFamily } = await queryClient
       .from('families')
       .select('*')
-      .eq('primary_contact_id', user.id)
+      .eq('primary_contact_id', resolvedUserId)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle()

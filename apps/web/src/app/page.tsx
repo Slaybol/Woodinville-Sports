@@ -51,7 +51,7 @@ export default async function HomePage() {
     )
   }
 
-  const huddleHome = await getCurrentHuddleHomeResult()
+  const huddleHome = await getCurrentHuddleHomeResult(supabase)
 
   return (
     <ParentShell

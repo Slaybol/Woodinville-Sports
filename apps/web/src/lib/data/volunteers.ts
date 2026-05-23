@@ -7,7 +7,7 @@ import type {
   VolunteerSlotWithSignupSummary,
 } from '@gridiron/shared'
 import { volunteerCenterDemo } from '@/lib/demo-data'
-import { resolveReadableFamily } from '@/lib/data/family'
+import { getAuthenticatedUserId, resolveReadableFamily } from '@/lib/data/family'
 import { createClient } from '@/lib/supabase/server'
 import type { PublishedSectionContent } from '@/lib/data/events'
 
@@ -27,6 +27,7 @@ function toDateLabel(slot: VolunteerSlot) {
 export async function getVolunteerCenterResult(): Promise<VolunteerCenterDataResult> {
   try {
     const supabase = await createClient()
+    const userId = await getAuthenticatedUserId(supabase)
 
     const [
       { data: slots, error: slotsError },
@@ -44,7 +45,7 @@ export async function getVolunteerCenterResult(): Promise<VolunteerCenterDataRes
         .limit(1)
         .maybeSingle(),
     ])
-    const family = await resolveReadableFamily(supabase)
+    const family = await resolveReadableFamily(supabase, userId)
 
     if (slotsError || !slots || slots.length === 0) {
       return {
