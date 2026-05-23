@@ -178,8 +178,8 @@ async function persistHuddle(formData: FormData, nextStatus: 'draft' | 'publishe
     }
   }
 
-  const submittedIds = actions.flatMap((action) => (action.id ? [action.id] : []))
-  const submittedSectionIds = sections.flatMap((section) => (section.id ? [section.id] : []))
+  const persistedActionIds: string[] = []
+  const persistedSectionIds: string[] = []
 
   for (const action of actions) {
     const actionPayload = {
@@ -199,10 +199,14 @@ async function persistHuddle(formData: FormData, nextStatus: 'draft' | 'publishe
       ? supabase.from('action_items').update(actionPayload).eq('id', action.id).select('id').single()
       : supabase.from('action_items').insert(actionPayload).select('id').single()
 
-    const { error: actionError } = await actionQuery
+    const { data: savedAction, error: actionError } = await actionQuery
 
     if (actionError) {
       redirectWithStatus('save_failed', actionError.message)
+    }
+
+    if (savedAction?.id) {
+      persistedActionIds.push(savedAction.id)
     }
   }
 
@@ -220,10 +224,14 @@ async function persistHuddle(formData: FormData, nextStatus: 'draft' | 'publishe
       ? supabase.from('huddle_sections').update(sectionPayload).eq('id', section.id).select('id').single()
       : supabase.from('huddle_sections').insert(sectionPayload).select('id').single()
 
-    const { error: sectionError } = await sectionQuery
+    const { data: savedSection, error: sectionError } = await sectionQuery
 
     if (sectionError) {
       redirectWithStatus('save_failed', sectionError.message)
+    }
+
+    if (savedSection?.id) {
+      persistedSectionIds.push(savedSection.id)
     }
   }
 
@@ -239,7 +247,7 @@ async function persistHuddle(formData: FormData, nextStatus: 'draft' | 'publishe
 
     const idsToDelete = (existingActions || [])
       .map((item) => item.id)
-      .filter((id) => !submittedIds.includes(id))
+      .filter((id) => !persistedActionIds.includes(id))
 
     if (idsToDelete.length > 0) {
       const { error: deleteError } = await supabase.from('action_items').delete().in('id', idsToDelete)
@@ -260,7 +268,7 @@ async function persistHuddle(formData: FormData, nextStatus: 'draft' | 'publishe
 
     const sectionIdsToDelete = (existingSections || [])
       .map((item) => item.id)
-      .filter((id) => !submittedSectionIds.includes(id))
+      .filter((id) => !persistedSectionIds.includes(id))
 
     if (sectionIdsToDelete.length > 0) {
       const { error: deleteSectionsError } = await supabase.from('huddle_sections').delete().in('id', sectionIdsToDelete)

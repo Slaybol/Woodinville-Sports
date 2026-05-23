@@ -53,6 +53,9 @@ function eventDay(displayDate?: string | null) {
 
 export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentProps) {
   const { huddle, urgent_actions, upcoming_events, volunteer_needs, family_progress } = model
+  const actionSection = model.sections.find((section) => section.section_type === 'actions')
+  const calendarSection = model.sections.find((section) => section.section_type === 'calendar')
+  const volunteerSection = model.sections.find((section) => section.section_type === 'volunteer')
   const highlights = (model.sections.find((section) => section.section_type === 'highlights')?.metadata
     .highlights || []) as string[]
   const primaryUrgent = urgent_actions[0]
@@ -153,8 +156,8 @@ export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentP
             <CardHeader className="flex-row items-center justify-between">
               <div>
                 <p className="brand-kicker">Actions</p>
-                <CardTitle className="mt-1">This Week&apos;s Playbook</CardTitle>
-                <p className="text-sm text-ink-600">Required family action items and deadlines.</p>
+                <CardTitle className="mt-1">{actionSection?.title || "This Week's Playbook"}</CardTitle>
+                <p className="text-sm text-ink-600">{actionSection?.body || 'Required family action items and deadlines.'}</p>
               </div>
               <Link href="/actions">
                 <Button variant="outline" size="sm">
@@ -217,7 +220,8 @@ export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentP
             <CardHeader className="flex-row items-center justify-between">
               <div>
                 <p className="brand-kicker">Calendar</p>
-                <CardTitle className="mt-1">This Week</CardTitle>
+                <CardTitle className="mt-1">{calendarSection?.title || 'This Week'}</CardTitle>
+                <p className="text-sm text-ink-600">{calendarSection?.body || 'Trusted logistics and schedule details for the week ahead.'}</p>
               </div>
               <Link href="/schedule" className="text-sm font-bold text-falcon-700">
                 Calendar
@@ -251,7 +255,8 @@ export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentP
             <CardHeader className="flex-row items-center justify-between">
               <div>
                 <p className="brand-kicker">Volunteer</p>
-                <CardTitle className="mt-1">Volunteer Needs</CardTitle>
+                <CardTitle className="mt-1">{volunteerSection?.title || 'Volunteer Needs'}</CardTitle>
+                <p className="text-sm text-ink-600">{volunteerSection?.body || 'Open roles and volunteer opportunities for families.'}</p>
               </div>
               <Link href="/volunteers" className="text-sm font-bold text-falcon-700">
                 Open slots
