@@ -32,16 +32,28 @@ async function ensureGuardianMembership(params: {
   userId: string
   displayName: string
 }) {
-  const { error } = await params.supabase.from('family_members').upsert(
-    {
-      family_id: params.familyId,
-      profile_id: params.userId,
-      role: 'guardian',
-      display_name: params.displayName,
-      is_primary: true,
-    },
-    { onConflict: 'family_id,profile_id' }
-  )
+  const { data: existingMembership, error: membershipLookupError } = await params.supabase
+    .from('family_members')
+    .select('family_id')
+    .eq('family_id', params.familyId)
+    .eq('profile_id', params.userId)
+    .maybeSingle()
+
+  if (membershipLookupError) {
+    return membershipLookupError
+  }
+
+  if (existingMembership?.family_id) {
+    return null
+  }
+
+  const { error } = await params.supabase.from('family_members').insert({
+    family_id: params.familyId,
+    profile_id: params.userId,
+    role: 'guardian',
+    display_name: params.displayName,
+    is_primary: true,
+  })
 
   return error
 }
