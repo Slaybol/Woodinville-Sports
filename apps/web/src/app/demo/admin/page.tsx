@@ -12,6 +12,8 @@ const adminTiles = [
   { href: '/demo/admin/families', label: 'Families', detail: `${platformFamilies.length} family records`, icon: Users },
   { href: '/demo/admin/messages', label: 'Messages', detail: `${platformMessages.length} queued examples`, icon: MessageSquareText },
   { href: '/demo/admin/game-day', label: 'Game Day', detail: `${platformRsvps[2]?.unknown || 0} RSVP unknown`, icon: Trophy },
+  { href: '/demo/admin/actions', label: 'Actions', detail: 'Registration and camp tasks', icon: ClipboardList },
+  { href: '/demo/admin/calendar', label: 'Calendar', detail: 'Key dates and logistics', icon: CalendarDays },
 ]
 
 export default function DemoAdminPage() {
@@ -21,7 +23,7 @@ export default function DemoAdminPage() {
       title="Self-Contained Admin Demo"
       description="A fast coach and secretary walkthrough that uses local static data plus a browser-only publish simulation."
     >
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {adminTiles.map((tile) => (
           <Link key={tile.href} href={tile.href}>
             <Card className="h-full transition-colors hover:bg-ink-50">
@@ -56,16 +58,16 @@ export default function DemoAdminPage() {
               <Badge variant="info">Secretary</Badge>
               <Badge variant="outline">Team parent</Badge>
             </div>
-            <Link href="/demo/schedule">
+            <Link href="/demo/admin/calendar">
               <Button variant="outline" className="w-full">
                 <CalendarDays size={16} className="mr-2" />
-                Open calendar demo
+                Open admin calendar
               </Button>
             </Link>
-            <Link href="/demo/actions">
+            <Link href="/demo/admin/actions">
               <Button variant="outline" className="w-full">
                 <ClipboardList size={16} className="mr-2" />
-                Open action demo
+                Open admin actions
               </Button>
             </Link>
           </CardContent>

@@ -18,9 +18,9 @@ const demoAdminNav: Array<{
   { label: 'Families', href: '/demo/admin/families', icon: Users, key: 'families' },
   { label: 'Messages', href: '/demo/admin/messages', icon: MessageSquareText, key: 'messages' },
   { label: 'Game Day', href: '/demo/admin/game-day', icon: Trophy, key: 'gameDay' },
-  { label: 'Actions', href: '/demo/actions', icon: ClipboardList, key: 'actions' },
-  { label: 'Calendar', href: '/demo/schedule', icon: CalendarDays, key: 'calendar' },
-  { label: 'Volunteer', href: '/demo/volunteers', icon: Users, key: 'volunteers' },
+  { label: 'Actions', href: '/demo/admin/actions', icon: ClipboardList, key: 'actions' },
+  { label: 'Calendar', href: '/demo/admin/calendar', icon: CalendarDays, key: 'calendar' },
+  { label: 'Volunteer', href: '/demo/admin/volunteers', icon: Users, key: 'volunteers' },
 ]
 
 interface DemoAdminShellProps {
