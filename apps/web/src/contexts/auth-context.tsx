@@ -40,7 +40,10 @@ interface TeamMembershipRow {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(() => {
+    if (typeof window === 'undefined') return true
+    return !window.location.pathname.startsWith('/demo')
+  })
 
   async function fetchProfile(supabase: SupabaseClient, userId: string) {
     try {
@@ -91,6 +94,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Only run on client side
     if (typeof window === 'undefined') return
+    if (window.location.pathname.startsWith('/demo')) {
+      return
+    }
 
     const initAuth = async () => {
       try {

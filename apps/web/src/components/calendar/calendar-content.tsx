@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface CalendarContentProps {
   events: CalendarEvent[]
+  routePrefix?: string
   publishedSection?: {
     title: string
     body: string
@@ -69,7 +70,7 @@ function dayLabel(event: CalendarEvent) {
   return 'Date'
 }
 
-export function CalendarContent({ events, publishedSection, dataState }: CalendarContentProps) {
+export function CalendarContent({ events, routePrefix = '', publishedSection, dataState }: CalendarContentProps) {
   const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]>('All')
   const featured = events.find((event) => event.event_type === 'camp') || events[0]
   const filteredEvents = events.filter((event) => {
@@ -129,7 +130,7 @@ export function CalendarContent({ events, publishedSection, dataState }: Calenda
               {filteredEvents.map((event) => (
                 <Link
                   key={event.id}
-                  href={`/schedule/${event.id}`}
+                  href={`${routePrefix}/schedule/${event.id}`}
                   className="flex min-h-16 gap-3 rounded-lg border border-ink-200 p-3 transition-colors hover:bg-ink-50"
                 >
                   <div className="w-14 shrink-0 text-center">

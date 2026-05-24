@@ -40,8 +40,8 @@ export default async function HomePage() {
                 <Link href="/auth">
                   <Button className="w-full">Sign In / Accept Invite</Button>
                 </Link>
-                <Link href="/preview/huddle" className="mt-3 block text-center text-sm font-bold text-falcon-700">
-                  Preview without signing in
+                <Link href="/demo" className="mt-3 block text-center text-sm font-bold text-falcon-700">
+                  Open fast self-contained demo
                 </Link>
               </CardContent>
             </Card>

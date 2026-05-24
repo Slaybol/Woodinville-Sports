@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 interface HuddleHomeContentProps {
   model: HuddleHomeModel
   preview?: boolean
+  routePrefix?: string
 }
 
 function isUrgentAction(action: ActionItem) {
@@ -51,7 +52,7 @@ function eventDay(displayDate?: string | null) {
   return 'Date'
 }
 
-export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentProps) {
+export function HuddleHomeContent({ model, preview = false, routePrefix = '' }: HuddleHomeContentProps) {
   const { huddle, urgent_actions, upcoming_events, volunteer_needs, family_progress } = model
   const actionSection = model.sections.find((section) => section.section_type === 'actions')
   const calendarSection = model.sections.find((section) => section.section_type === 'calendar')
@@ -130,7 +131,7 @@ export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentP
                 <CardTitle className="mt-1">{actionSection?.title || "This Week's Playbook"}</CardTitle>
                 <p className="text-sm text-ink-600">{actionSection?.body || 'Required family action items and deadlines.'}</p>
               </div>
-              <Link href="/actions">
+              <Link href={`${routePrefix}/actions`}>
                 <Button variant="outline" size="sm">
                   View All
                   <ChevronRight size={16} className="ml-1" />
@@ -194,7 +195,7 @@ export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentP
                 <CardTitle className="mt-1">{calendarSection?.title || 'This Week'}</CardTitle>
                 <p className="text-sm text-ink-600">{calendarSection?.body || 'Trusted logistics and schedule details for the week ahead.'}</p>
               </div>
-              <Link href="/schedule" className="text-sm font-bold text-falcon-700">
+              <Link href={`${routePrefix}/schedule`} className="text-sm font-bold text-falcon-700">
                 Calendar
               </Link>
             </CardHeader>
@@ -229,7 +230,7 @@ export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentP
                 <CardTitle className="mt-1">{volunteerSection?.title || 'Volunteer Needs'}</CardTitle>
                 <p className="text-sm text-ink-600">{volunteerSection?.body || 'Open roles and volunteer opportunities for families.'}</p>
               </div>
-              <Link href="/volunteers" className="text-sm font-bold text-falcon-700">
+              <Link href={`${routePrefix}/volunteers`} className="text-sm font-bold text-falcon-700">
                 Open slots
               </Link>
             </CardHeader>

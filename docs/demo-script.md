@@ -88,7 +88,15 @@ Also keep this in mind:
 
 ## Before You Start
 
-Use the main demo URL you were given.
+Use the fast demo URL first:
+
+- `/demo`
+
+This route is self-contained. It does not require Supabase, login, seeded auth users, or a live database connection.
+
+Use the live app only when you specifically want to test Supabase-backed persistence:
+
+- `/`
 
 Demo accounts:
 
@@ -97,7 +105,11 @@ Demo accounts:
 
 Use the demo password set in Supabase Auth.
 
-If sign-in is unavailable, preview routes exist:
+If sign-in is unavailable, use the self-contained demo route:
+
+- `/demo`
+
+Older preview routes also exist:
 
 - `/preview/huddle`
 - `/preview/actions`
@@ -117,10 +129,9 @@ You can also say:
 
 ## 1. Sign In As A Parent
 
-1. Open the app home page.
-2. Click `Sign In / Accept Invite`.
-3. Sign in with `parent@demo.com`.
-4. Enter the demo password.
+1. Open `/demo`.
+2. Start on the parent-facing Weekly Huddle.
+3. Use the bottom navigation to move through Actions, Calendar, Volunteer, and More.
 
 You should land on the family-facing home screen.
 
@@ -129,10 +140,11 @@ What to notice:
 - this is designed around the current week
 - the experience starts with the Weekly Huddle, not a generic dashboard
 - the app is trying to reduce the need for parents to search through email, texts, and website pages
+- this route is intentionally fast because it does not wait on live data
 
 ## 2. Home Screen: Weekly Huddle
 
-Stay on `/`.
+Stay on `/demo`.
 
 Review the home screen from top to bottom.
 
@@ -155,8 +167,8 @@ Good summary line:
 
 ## 3. Family Profile
 
-1. Open `/profile`, or tap `More`.
-2. Review the family profile screen.
+1. Tap `More`.
+2. Explain that Family Profile exists in the live app, while the fast demo keeps the walkthrough focused on program operations.
 
 What to notice:
 
@@ -204,7 +216,7 @@ Good summary line:
 
 ## 5. Team
 
-1. Open `/team`, or tap `Team` from `More`.
+1. Open `/demo/team`, or tap `Team` from `More`.
 2. Review the program teams, roster preview, and coaching staff cards.
 
 What to notice:
@@ -221,7 +233,7 @@ Why this matters:
 
 ## 6. Messages
 
-1. Open `/messages`, or tap `Messages` from `More`.
+1. Open `/demo/messages`, or tap `Messages` from `More`.
 2. Review official announcements, urgent alerts, and team updates.
 
 What to notice:
@@ -238,7 +250,7 @@ Why this matters:
 
 ## 7. Registration
 
-1. Open `/registration`, or tap `Registration` from `More`.
+1. Open `/demo/registration`, or tap `Registration` from `More`.
 2. Review FinalForms, sports physical, FGIC dues, CWU Camp, and Hawaii Travel Hub readiness.
 
 What to notice:
@@ -255,7 +267,7 @@ Why this matters:
 
 ## 8. Game Day
 
-1. Open `/game-day`, or tap `Game Day` from `More`.
+1. Open `/demo/game-day`, or tap `Game Day` from `More`.
 2. Review opponent, location, arrival time, uniform, RSVP summary, score placeholder, and film links.
 
 What to notice:
@@ -272,7 +284,7 @@ Why this matters:
 
 ## 9. Action Center
 
-1. Open `/actions`.
+1. Open `/demo/actions`.
 2. Review the checklist.
 
 What to click:
@@ -302,7 +314,7 @@ Good summary line:
 
 ## 10. Schedule And Event Detail
 
-1. Open `/schedule`.
+1. Open `/demo/schedule`.
 2. Review the event list.
 3. Open an event detail page.
 
@@ -328,7 +340,7 @@ Good summary line:
 
 ## 11. Volunteer Screen
 
-1. Open `/volunteers`.
+1. Open `/demo/volunteers`.
 2. Review the open roles and volunteer progress.
 3. Click `Sign Up` on one role.
 
@@ -356,11 +368,8 @@ Now switch to the coach/admin side.
 
 ## 12. Sign In As A Coach
 
-1. Sign out of the parent account.
-2. Go to `/auth`.
-3. Sign in with `coach@demo.com`.
-4. Enter the demo password.
-5. Open `/admin`.
+1. Tap the admin/monitor icon in the demo header, or open `/demo/admin`.
+2. Review the coach and secretary dashboard.
 
 What to notice:
 
@@ -392,8 +401,8 @@ Good summary line:
 
 ## 14. Huddle Editor
 
-1. Open `/admin/huddles/new`.
-2. Review the huddle editor.
+1. Open `/demo/admin`.
+2. Review the simulated publish panel.
 
 What to look at:
 
@@ -405,14 +414,13 @@ What to look at:
 Optional interaction:
 
 1. Edit the summary.
-2. Edit one action title.
-3. Click `Save Draft`.
-4. If you want to test the full flow, click `Publish Huddle`.
+2. Click `Publish to parent demo`.
+3. Click `View parent demo`.
 
 After publishing:
 
-1. Sign back in as the parent.
-2. Confirm the updated summary and action item appear on the parent side.
+1. Confirm the update appears at the top of `/demo`.
+2. Explain that this is browser-only demo storage, not Supabase persistence.
 
 Why this matters:
 
@@ -427,7 +435,7 @@ Good summary line:
 
 ## 15. Team Manager Preview
 
-1. Open `/admin/team`.
+1. Open `/demo/admin/team`.
 2. Review the team cards, roster preview, and staff ownership.
 
 What to notice:
@@ -438,7 +446,7 @@ What to notice:
 
 ## 16. Families Manager Preview
 
-1. Open `/admin/families`.
+1. Open `/demo/admin/families`.
 2. Review family setup, requirements, volunteer progress, and RSVP status.
 
 What to notice:
@@ -449,7 +457,7 @@ What to notice:
 
 ## 17. Messages Manager Preview
 
-1. Open `/admin/messages`.
+1. Open `/demo/admin/messages`.
 2. Review the compose preview and message queue.
 
 What to notice:
@@ -460,7 +468,7 @@ What to notice:
 
 ## 18. Game Day Manager Preview
 
-1. Open `/admin/game-day`.
+1. Open `/demo/admin/game-day`.
 2. Review logistics, RSVP summary, result placeholder, and film placeholders.
 
 What to notice:
@@ -471,7 +479,7 @@ What to notice:
 
 ## 19. Action Manager
 
-1. Open `/admin/actions`.
+1. Open `/demo/actions`.
 2. Review the action items.
 
 What to notice:
@@ -491,7 +499,7 @@ Why this matters:
 
 ## 20. Calendar Manager
 
-1. Open `/admin/calendar`.
+1. Open `/demo/schedule`.
 2. Review the event list.
 
 What to notice:
@@ -509,7 +517,7 @@ Why this matters:
 
 ## 21. Volunteer Manager
 
-1. Open `/admin/volunteers`.
+1. Open `/demo/volunteers`.
 2. Review the volunteer slots and gaps.
 
 What to notice:
