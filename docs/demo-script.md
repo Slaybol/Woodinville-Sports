@@ -179,7 +179,98 @@ Why this matters:
 - it can reduce "which team is this for?" confusion
 - it lays the groundwork for team-specific experiences like Varsity, C-Team, and parent-specific information
 
-## 4. Action Center
+## 4. More Menu: Program Platform Preview
+
+1. Tap `More`.
+2. Review the new program areas:
+   - `Team`
+   - `Messages`
+   - `Registration`
+   - `Game Day`
+   - `Documents`
+   - `Emergency`
+   - `Resources`
+
+What to notice:
+
+- this is where Gridiron starts to feel like a full team app, not only a weekly huddle
+- these areas are intentionally marked as `MVP 2.0 Preview`
+- the five-tab parent navigation stays simple, while deeper features live under `More`
+- the visual language stays inside the same mobile shell instead of sending families to disconnected pages
+
+Good summary line:
+
+"The Huddle is the home base, and More is where the broader football program starts to come into view."
+
+## 5. Team
+
+1. Open `/team`, or tap `Team` from `More`.
+2. Review the program teams, roster preview, and coaching staff cards.
+
+What to notice:
+
+- Varsity, JV, C-Team, and All Program are represented
+- roster and staff information is presented as app-native content
+- this creates a path toward team-specific schedules, messages, and logistics
+
+Why this matters:
+
+- coaches and secretaries can point families to a trusted team context
+- new families can understand where team, staff, and schedule information belongs
+- this makes the app feel connected to the public website sections like Team, Varsity, C-Team, and Coaching Staff
+
+## 6. Messages
+
+1. Open `/messages`, or tap `Messages` from `More`.
+2. Review official announcements, urgent alerts, and team updates.
+
+What to notice:
+
+- communication is staff-controlled
+- read-status metadata is visible as a product direction
+- this does not introduce parent-to-parent chat yet
+
+Why this matters:
+
+- official communication should come before open chat
+- urgent items like practice changes or weather updates need to stand apart from normal announcements
+- secretaries and coaches can imagine one place for app, email, and future text delivery
+
+## 7. Registration
+
+1. Open `/registration`, or tap `Registration` from `More`.
+2. Review FinalForms, sports physical, FGIC dues, CWU Camp, and Hawaii Travel Hub readiness.
+
+What to notice:
+
+- website-backed requirements become a family checklist
+- unfinished payment or travel workflows are clearly marked as preview items
+- parents can see what is due, who owns it, and why it matters
+
+Why this matters:
+
+- registration, camp, dues, and travel details are some of the highest-friction family tasks
+- this gives the secretary a future dashboard for chasing missing requirements
+- it extends public website sections like Register, Membership Dues, CWU Camp, and Hawaii Travel Hub
+
+## 8. Game Day
+
+1. Open `/game-day`, or tap `Game Day` from `More`.
+2. Review opponent, location, arrival time, uniform, RSVP summary, score placeholder, and film links.
+
+What to notice:
+
+- the parent view answers game-day logistics in one place
+- RSVP and attendance data are represented without making it a live workflow yet
+- scorekeeping, film, and highlights are placeholders for future build-out
+
+Why this matters:
+
+- game day is where schedule, communication, volunteer needs, and team logistics all collide
+- this is the area most directly comparable to broader team-management tools
+- the Woodinville-specific value is keeping it tied to the Weekly Huddle and program operations
+
+## 9. Action Center
 
 1. Open `/actions`.
 2. Review the checklist.
@@ -209,7 +300,7 @@ Good summary line:
 
 "The to-do list is already built for the family instead of being buried inside a message."
 
-## 5. Schedule And Event Detail
+## 10. Schedule And Event Detail
 
 1. Open `/schedule`.
 2. Review the event list.
@@ -235,7 +326,7 @@ Good summary line:
 
 "This is where a family goes to confirm details, not guess."
 
-## 6. Volunteer Screen
+## 11. Volunteer Screen
 
 1. Open `/volunteers`.
 2. Review the open roles and volunteer progress.
@@ -263,7 +354,7 @@ Now switch to the coach/admin side.
 
 ## Part 2: What Staff Would Manage
 
-## 7. Sign In As A Coach
+## 12. Sign In As A Coach
 
 1. Sign out of the parent account.
 2. Go to `/auth`.
@@ -276,7 +367,7 @@ What to notice:
 - this is the staff/admin side of the product
 - this is where the information families rely on gets created and maintained
 
-## 8. Admin Dashboard
+## 13. Admin Dashboard
 
 Stay on `/admin`.
 
@@ -299,7 +390,7 @@ Good summary line:
 
 "This is not just a page builder. It starts to become a control panel for the week."
 
-## 9. Huddle Editor
+## 14. Huddle Editor
 
 1. Open `/admin/huddles/new`.
 2. Review the huddle editor.
@@ -334,7 +425,51 @@ Good summary line:
 
 "The same weekly update can power the whole family experience."
 
-## 10. Action Manager
+## 15. Team Manager Preview
+
+1. Open `/admin/team`.
+2. Review the team cards, roster preview, and staff ownership.
+
+What to notice:
+
+- the program structure is visible to staff
+- roster and staff management are represented without a schema change
+- this is where team-specific targeting can eventually be managed
+
+## 16. Families Manager Preview
+
+1. Open `/admin/families`.
+2. Review family setup, requirements, volunteer progress, and RSVP status.
+
+What to notice:
+
+- the secretary can quickly see which families need follow-up
+- missing physicals, FinalForms, dues, camp, and travel readiness have a natural home
+- this is the operational view behind the family-facing checklist
+
+## 17. Messages Manager Preview
+
+1. Open `/admin/messages`.
+2. Review the compose preview and message queue.
+
+What to notice:
+
+- staff can imagine drafting official announcements and urgent alerts
+- read-rate metadata is shown as a future workflow
+- communication stays official and staff-owned first
+
+## 18. Game Day Manager Preview
+
+1. Open `/admin/game-day`.
+2. Review logistics, RSVP summary, result placeholder, and film placeholders.
+
+What to notice:
+
+- this is the staff side of game-day readiness
+- RSVP follow-up, score/result tracking, and film links have obvious future homes
+- it shows how the app can move closer to TeamSnap/GameChanger-style utility while staying Woodinville-specific
+
+## 19. Action Manager
 
 1. Open `/admin/actions`.
 2. Review the action items.
@@ -354,7 +489,7 @@ Why this matters:
 - this can help reduce missed deadlines and manual chasing
 - this is where public website information becomes actionable, especially registration, dues, travel prep, and camp requirements
 
-## 11. Calendar Manager
+## 20. Calendar Manager
 
 1. Open `/admin/calendar`.
 2. Review the event list.
@@ -372,7 +507,7 @@ Why this matters:
 - it helps families trust the app instead of asking around
 - it supports future team-specific schedule views and better integration with public calendar content
 
-## 12. Volunteer Manager
+## 21. Volunteer Manager
 
 1. Open `/admin/volunteers`.
 2. Review the volunteer slots and gaps.
@@ -406,6 +541,7 @@ If you want to talk about where this could go next, mention:
 
 - urgent alerts
 - richer team targeting
+- Team, Messages, Registration, Game Day, and Families workflows
 - better completion tracking
 - document and form access
 - stronger volunteer coordination

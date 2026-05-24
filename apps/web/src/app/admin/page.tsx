@@ -6,9 +6,12 @@ import {
   Edit3,
   Home,
   Megaphone,
+  MessageSquareText,
   Plus,
   Send,
+  Trophy,
   Users,
+  UsersRound,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { WoodinvilleLogo } from '@/components/branding/woodinville-logo'
@@ -19,6 +22,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 const adminNav = [
   { label: 'Dashboard', href: '/admin', icon: Home },
   { label: 'Huddle', href: '/admin/huddles/new', icon: Megaphone },
+  { label: 'Team', href: '/admin/team', icon: UsersRound },
+  { label: 'Families', href: '/admin/families', icon: Users },
+  { label: 'Messages', href: '/admin/messages', icon: MessageSquareText },
+  { label: 'Game Day', href: '/admin/game-day', icon: Trophy },
   { label: 'Actions', href: '/admin/actions', icon: ClipboardList },
   { label: 'Calendar', href: '/admin/calendar', icon: CalendarDays },
   { label: 'Volunteer', href: '/admin/volunteers', icon: Users },

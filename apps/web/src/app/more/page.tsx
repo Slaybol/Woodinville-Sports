@@ -3,12 +3,16 @@ import { redirect } from 'next/navigation'
 import {
   Bell,
   ChevronRight,
+  ClipboardCheck,
   Compass,
   FileText,
   HeartHandshake,
+  MessageSquareText,
   Shield,
+  Trophy,
   UserRound,
   Users,
+  UsersRound,
 } from 'lucide-react'
 import { ParentShell } from '@/components/layout/parent-shell'
 import { Badge } from '@/components/ui/badge'
@@ -16,6 +20,30 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getFamilyProfileData } from '@/lib/data/profile'
 
 const menuItems = [
+  {
+    href: '/team',
+    title: 'Team',
+    detail: 'Program overview, roster preview, coaching staff, and team-specific context.',
+    icon: UsersRound,
+  },
+  {
+    href: '/messages',
+    title: 'Messages',
+    detail: 'Official announcements, urgent alerts, team updates, and read-status previews.',
+    icon: MessageSquareText,
+  },
+  {
+    href: '/registration',
+    title: 'Registration',
+    detail: 'FinalForms, physicals, FGIC dues, CWU Camp, travel, and document readiness.',
+    icon: ClipboardCheck,
+  },
+  {
+    href: '/game-day',
+    title: 'Game Day',
+    detail: 'Opponent logistics, arrival, uniform, RSVP summary, results, and film placeholders.',
+    icon: Trophy,
+  },
   {
     href: '/profile',
     title: 'Family profile',
@@ -91,7 +119,7 @@ export default async function MorePage() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center gap-3 rounded-lg border border-ink-200 p-4 transition-colors hover:bg-ink-50"
+                  className="flex min-w-0 items-center gap-3 rounded-lg border border-ink-200 p-4 transition-colors hover:bg-ink-50"
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-falcon-50 text-falcon-700">
                     <item.icon size={18} />

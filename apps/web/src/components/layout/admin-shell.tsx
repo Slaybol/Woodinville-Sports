@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { CalendarDays, ClipboardList, Home, Megaphone, Users } from 'lucide-react'
+import { CalendarDays, ClipboardList, Home, Megaphone, MessageSquareText, Trophy, Users, UsersRound } from 'lucide-react'
 import { WoodinvilleLogo } from '@/components/branding/woodinville-logo'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -7,6 +7,10 @@ import { Button } from '@/components/ui/button'
 const adminNav = [
   { label: 'Dashboard', href: '/admin', icon: Home, key: 'dashboard' },
   { label: 'Huddle', href: '/admin/huddles/new', icon: Megaphone, key: 'huddles' },
+  { label: 'Team', href: '/admin/team', icon: UsersRound, key: 'team' },
+  { label: 'Families', href: '/admin/families', icon: Users, key: 'families' },
+  { label: 'Messages', href: '/admin/messages', icon: MessageSquareText, key: 'messages' },
+  { label: 'Game Day', href: '/admin/game-day', icon: Trophy, key: 'gameDay' },
   { label: 'Actions', href: '/admin/actions', icon: ClipboardList, key: 'actions' },
   { label: 'Calendar', href: '/admin/calendar', icon: CalendarDays, key: 'calendar' },
   { label: 'Volunteer', href: '/admin/volunteers', icon: Users, key: 'volunteers' },
