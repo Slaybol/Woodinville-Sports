@@ -25,8 +25,9 @@ export function WoodinvilleLogo({
         alt="Woodinville Football logo"
         fill
         priority={priority}
+        unoptimized
         sizes={`${size}px`}
-        className="object-contain p-1.5"
+        className="object-contain p-0.5"
       />
     </div>
   )
