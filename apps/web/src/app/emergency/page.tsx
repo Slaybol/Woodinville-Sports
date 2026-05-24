@@ -1,149 +1,132 @@
-'use client'
-
-import Link from 'next/link'
-import { 
-  Phone, 
-  ChevronLeft,
-  Mail,
-  User,
-  AlertCircle
-} from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
+import { AlertTriangle, Mail, Phone, Shield, Users } from 'lucide-react'
+import { ParentShell } from '@/components/layout/parent-shell'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-interface EmergencyContact {
-  id: string
-  role: string
-  name: string
-  phone: string
-  email?: string
-}
-
-const mockContacts: EmergencyContact[] = [
+const emergencyContacts = [
   {
-    id: '1',
     role: 'Head Coach',
-    name: 'Coach Mike Williams',
+    name: 'Wayne Maxwell',
     phone: '(425) 555-0101',
-    email: 'mwilliams@school.edu',
+    email: 'coach@woodinvillefootball.com',
   },
   {
-    id: '2',
-    role: 'Assistant Coach',
-    name: 'Coach David Martinez',
+    role: 'Team Secretary',
+    name: 'Program Operations Contact',
     phone: '(425) 555-0102',
-    email: 'dmartinez@school.edu',
+    email: 'secretary@woodinvillefootball.com',
   },
   {
-    id: '3',
-    role: 'Team Parent Coordinator',
-    name: 'Sarah Johnson',
-    phone: '(425) 555-0201',
-    email: 'sjohnson@email.com',
-  },
-  {
-    id: '4',
-    role: 'Athletic Director',
-    name: 'Jennifer Adams',
-    phone: '(425) 555-0301',
-    email: 'jadams@school.edu',
-  },
-  {
-    id: '5',
     role: 'Athletic Trainer',
-    name: 'Dr. Robert Chen',
-    phone: '(425) 555-0401',
-    email: 'rchen@school.edu',
+    name: 'Training Room',
+    phone: '(425) 555-0103',
+    email: 'trainer@woodinvillefootball.com',
   },
   {
-    id: '6',
     role: 'School Main Office',
     name: 'Woodinville High School',
-    phone: '(425) 555-0001',
+    phone: '(425) 555-0104',
+    email: 'office@woodinvillehs.edu',
   },
 ]
 
 export default function EmergencyPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-primary text-primary-foreground">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16">
-            <Link href="/" className="flex items-center gap-2 hover:opacity-80">
-              <ChevronLeft size={20} />
-              <span>Back</span>
-            </Link>
-            <h1 className="text-lg font-semibold ml-4 flex items-center gap-2">
-              <Phone size={20} />
-              Emergency Contacts
-            </h1>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Emergency Notice */}
-        <Card className="mb-6 border-red-200 bg-red-50">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="text-red-600 mt-0.5 flex-shrink-0" size={20} />
-              <div>
-                <p className="font-semibold text-red-800">In case of emergency</p>
-                <p className="text-red-700 text-sm">
-                  For life-threatening emergencies, always call 911 first. 
-                  Use these contacts for team-related urgent matters.
-                </p>
-              </div>
+    <ParentShell
+      activeNav="more"
+      statusBadge={{ label: 'Support and safety', tone: 'live' }}
+    >
+      <main className="mx-auto grid max-w-[460px] gap-6 px-4 py-6">
+        <section className="space-y-6">
+          <div>
+            <div className="mb-2 flex flex-wrap items-center gap-2">
+              <Badge variant="destructive">Urgent guidance</Badge>
+              <Badge variant="outline">Team contacts</Badge>
             </div>
-          </CardContent>
-        </Card>
+            <p className="brand-kicker">Emergency</p>
+            <h1 className="mt-2 font-display text-4xl leading-none text-ink-950">Urgent team contacts</h1>
+            <p className="mt-3 text-sm leading-6 text-ink-600">
+              This is where families should be able to quickly confirm who to call for team-related urgent matters without searching through old emails.
+            </p>
+          </div>
 
-        {/* Contact List */}
-        <div className="space-y-4">
-          {mockContacts.map((contact) => (
-            <Card key={contact.id}>
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between gap-4">
+          <Card className="border-statusRed-100 bg-red-50">
+            <CardContent className="pt-4 sm:pt-5">
+              <div className="flex gap-3">
+                <AlertTriangle size={20} className="mt-0.5 shrink-0 text-statusRed-600" />
+                <div>
+                  <p className="font-bold text-red-900">For life-threatening emergencies</p>
+                  <p className="mt-1 text-sm leading-6 text-red-900">
+                    Call 911 first. Use the contacts below for program-related urgent updates, player pickup changes, practice issues, and time-sensitive team questions.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Contact list</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {emergencyContacts.map((contact) => (
+                <div key={contact.role} className="rounded-lg border border-ink-200 p-4">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center flex-shrink-0">
-                      <User size={20} className="text-primary" />
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-falcon-50 text-falcon-700">
+                      <Users size={18} />
                     </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">{contact.role}</p>
-                      <p className="font-semibold">{contact.name}</p>
-                      <div className="flex flex-col gap-1 mt-2">
-                        <a 
-                          href={`tel:${contact.phone}`}
-                          className="text-sm text-primary hover:underline flex items-center gap-1"
-                        >
-                          <Phone size={14} />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-bold uppercase tracking-wide text-ink-500">{contact.role}</p>
+                      <p className="mt-1 font-bold text-ink-950">{contact.name}</p>
+                      <div className="mt-3 space-y-2 text-sm text-ink-700">
+                        <p className="flex items-center gap-2">
+                          <Phone size={14} className="text-falcon-700" />
                           {contact.phone}
-                        </a>
-                        {contact.email && (
-                          <a 
-                            href={`mailto:${contact.email}`}
-                            className="text-sm text-primary hover:underline flex items-center gap-1"
-                          >
-                            <Mail size={14} />
-                            {contact.email}
-                          </a>
-                        )}
+                        </p>
+                        <p className="flex items-center gap-2">
+                          <Mail size={14} className="text-falcon-700" />
+                          {contact.email}
+                        </p>
                       </div>
                     </div>
                   </div>
-                  <a href={`tel:${contact.phone}`}>
-                    <Button size="sm">
-                      <Phone size={16} className="mr-1" />
-                      Call
-                    </Button>
-                  </a>
+                  <div className="mt-4 flex gap-2">
+                    <a href={`tel:${contact.phone}`}>
+                      <Button size="sm">
+                        <Phone size={14} className="mr-2" />
+                        Call
+                      </Button>
+                    </a>
+                    <a href={`mailto:${contact.email}`}>
+                      <Button variant="outline" size="sm">
+                        <Mail size={14} className="mr-2" />
+                        Email
+                      </Button>
+                    </a>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+              ))}
+            </CardContent>
+          </Card>
+        </section>
+
+        <aside className="space-y-6">
+          <Card className="bg-falcon-50">
+            <CardContent className="pt-4 sm:pt-5">
+              <div className="flex gap-3">
+                <Shield size={20} className="mt-0.5 shrink-0 text-falcon-700" />
+                <div>
+                  <p className="font-bold text-falcon-950">Why this matters in the app</p>
+                  <p className="mt-1 text-sm leading-6 text-falcon-900">
+                    Emergency and support information should live beside the family profile, not in a separate old page or buried website footer.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </aside>
       </main>
-    </div>
+    </ParentShell>
   )
 }
