@@ -138,8 +138,8 @@ export default function DocumentsPage() {
                 />
               </div>
 
-              <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                <Folder size={15} className="shrink-0 text-ink-500" />
+              <div className="flex flex-wrap items-center gap-2">
+                <Folder size={15} className="text-ink-500" />
                 <Button size="sm" variant={activeCategory === 'all' ? 'default' : 'outline'} onClick={() => setActiveCategory('all')}>
                   All
                 </Button>
@@ -180,7 +180,7 @@ export default function DocumentsPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="mt-4 flex gap-2">
+                  <div className="mt-4 flex flex-wrap gap-2">
                     <Button variant="outline" size="sm">
                       Preview
                       <ExternalLink size={14} className="ml-2" />
