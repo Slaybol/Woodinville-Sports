@@ -27,7 +27,7 @@ export function WoodinvilleLogo({
         priority={priority}
         unoptimized
         sizes={`${size}px`}
-        className="object-contain p-0.5"
+        className="object-cover object-top p-1"
       />
     </div>
   )
