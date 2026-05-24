@@ -58,7 +58,6 @@ export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentP
   const volunteerSection = model.sections.find((section) => section.section_type === 'volunteer')
   const highlights = (model.sections.find((section) => section.section_type === 'highlights')?.metadata
     .highlights || []) as string[]
-  const primaryUrgent = urgent_actions[0]
   const actionCompletionPercent =
     family_progress && family_progress.action_items_total > 0
       ? Math.round((family_progress.action_items_complete / family_progress.action_items_total) * 100)
@@ -83,34 +82,6 @@ export function HuddleHomeContent({ model, preview = false }: HuddleHomeContentP
           </h1>
           {huddle.summary && (
             <p className="mt-4 max-w-3xl text-[15px] leading-7 text-ink-700">{huddle.summary}</p>
-          )}
-          {primaryUrgent && (
-            <div className="mt-5 flex flex-col gap-3 border-t border-ink-200 pt-5 sm:flex-row sm:items-end sm:justify-between">
-              <div className="min-w-0">
-                <div className="mb-2 flex flex-wrap items-center gap-2">
-                  <Badge variant="destructive">Next up</Badge>
-                  {primaryUrgent.due_label && <Badge variant="warning">{primaryUrgent.due_label}</Badge>}
-                </div>
-                <p className="font-display text-2xl leading-none text-ink-950">{primaryUrgent.title}</p>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-600">{primaryUrgent.description}</p>
-              </div>
-              <div className="flex gap-2">
-                <Link href="/actions">
-                  <Button size="sm">
-                    Open Actions
-                    <ChevronRight size={15} className="ml-1" />
-                  </Button>
-                </Link>
-                {primaryUrgent.external_url && (
-                  <a href={primaryUrgent.external_url} target="_blank" rel="noreferrer">
-                    <Button variant="outline" size="sm">
-                      Open Link
-                      <ExternalLink size={14} className="ml-2" />
-                    </Button>
-                  </a>
-                )}
-              </div>
-            </div>
           )}
         </div>
 
