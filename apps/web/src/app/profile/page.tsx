@@ -1,5 +1,6 @@
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Bell, CheckCircle2, Phone, Shield, User, Users } from 'lucide-react'
+import { Bell, CheckCircle2, Compass, Phone, Shield, User, Users } from 'lucide-react'
 import { ParentShell } from '@/components/layout/parent-shell'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -232,6 +233,54 @@ export default async function FamilyProfilePage({
                   Add your player above to connect your household to the right team and schedule.
                 </div>
               )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Program resource hubs</CardTitle>
+              <p className="text-sm text-ink-600">
+                These demo stubs show how the private app can extend the public website into a fuller family and staff experience.
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {[
+                {
+                  href: '/resources/team',
+                  title: 'Team and schedule',
+                  detail: 'Varsity, C-Team, coaching staff, and event logistics.',
+                },
+                {
+                  href: '/resources/parents',
+                  title: 'Parent resources',
+                  detail: 'Key dates, FAQ, registration, dues, camp, and travel context.',
+                },
+                {
+                  href: '/resources/fgic',
+                  title: 'FGIC operations',
+                  detail: 'Club info, members, committees, meeting minutes, and matching.',
+                },
+                {
+                  href: '/resources/sponsors',
+                  title: 'Sponsors and legacy',
+                  detail: 'Advertisers, sponsor support, and program identity.',
+                },
+              ].map((item) => (
+                <Link key={item.href} href={item.href} className="block rounded-lg border border-ink-200 p-4 transition-colors hover:bg-ink-50">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-falcon-50 text-falcon-700">
+                      <Compass size={18} />
+                    </div>
+                    <div>
+                      <p className="font-bold text-ink-950">{item.title}</p>
+                      <p className="mt-1 text-sm leading-5 text-ink-600">{item.detail}</p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+              <Link href="/resources">
+                <Button variant="outline" className="w-full">Open all resource hubs</Button>
+              </Link>
             </CardContent>
           </Card>
         </section>

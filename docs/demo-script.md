@@ -1,296 +1,424 @@
-# Gridiron Connect MVP Demo Guide
+# Gridiron Connect Demo Walkthrough
 
-This guide is written for coaches, team parents, or admins who want to click through the current MVP on their own.
+This walkthrough is meant for a coach, team secretary, team parent, or program admin who is seeing Gridiron Connect for the first time.
+
+The goal is not just to click through pages. The goal is to understand:
+
+- what the app already does
+- how it could reduce confusion for families
+- how it could reduce repetitive communication work for staff
+
+## What This App Is Trying To Solve
+
+Woodinville Football families usually need answers to the same questions every week:
+
+- What matters right now?
+- What do I still need to do?
+- When and where do we need to be?
+- What changed?
+- Where do I find the official details?
+
+Staff usually deal with the same communication problems every week:
+
+- repeating the same reminders in multiple places
+- answering the same parent questions again and again
+- chasing incomplete forms or deadlines
+- keeping schedule details current
+- filling volunteer gaps
+
+Gridiron Connect is meant to become the private weekly command center that sits behind the public website.
+
+The public website stays the front door.
+
+This app is the private operating layer for:
+
+- Weekly Huddle communication
+- action tracking
+- trusted event logistics
+- volunteer coordination
+- family-specific context
+
+Over time, it should feel like a natural extension of the Woodinville Football website, especially the areas families and staff already know:
+
+- Team
+- Schedules
+- Varsity
+- C-Team
+- Coaching Staff
+- Calendar
+- Parents
+- Key Dates
+- Events
+- Volunteering
+- FAQ
+- Register
+- Membership Dues
+- Hawaii Travel Hub
+- CWU Camp
+- Sponsors
+- Our Sponsors
+- Our Advertisers
+- Become a Sponsor
+- FGIC
+- Club Info
+- Members
+- Board & Committees
+- Bylaws
+- Meeting Minutes
+- Corporate Matching
+- Legacy
+
+## What This Demo Shows
+
+This demo focuses on two sides of the product:
+
+1. The parent experience
+2. The coach/admin experience
+
+As you go through it, think about two questions:
+
+1. Would this make life easier for families?
+2. Would this reduce the amount of manual follow-up from staff?
+
+Also keep this in mind:
+
+- the public website should still be the front door
+- this app should become the private companion behind it
+- the long-term opportunity is to make important website information easier to act on
 
 ## Before You Start
 
-Use the main demo site URL you were given.
+Use the main demo URL you were given.
 
-Demo accounts expected by the current setup:
+Demo accounts:
 
 - Parent demo: `parent@demo.com`
 - Coach demo: `coach@demo.com`
 
-Use the password that was set for those accounts in Supabase Auth.
+Use the demo password set in Supabase Auth.
 
-If the sign-in flow is unavailable for any reason, there are also preview pages:
+If sign-in is unavailable, preview routes exist:
 
 - `/preview/huddle`
 - `/preview/actions`
 - `/preview/volunteers`
 
-## What This Demo Shows
+## Suggested Framing Before You Begin
 
-The current MVP is focused on one core job:
+If you are introducing the app live, this is a good opening:
 
-- helping families know what matters this week
-- helping them complete required tasks
-- helping them trust schedule details
-- helping them claim volunteer roles
-- giving coaches/admins a way to manage that information
+"This is not trying to replace the public website. It is trying to give families one private place to see the weekly huddle, complete action items, check event details, and handle volunteer needs."
 
-This is not yet a messaging app, payment system, or full operations suite. It is the first working version of the Weekly Huddle command center.
+You can also say:
 
-## Part 1: Parent Experience
+"Over time, this should feel like the private extension of the Woodinville Football website, bringing key dates, registration items, camp details, volunteer needs, and team logistics into one guided family experience."
+
+## Part 1: What A Family Would Experience
 
 ## 1. Sign In As A Parent
 
 1. Open the app home page.
 2. Click `Sign In / Accept Invite`.
-3. Sign in with:
-   `parent@demo.com`
+3. Sign in with `parent@demo.com`.
 4. Enter the demo password.
-5. After sign-in, you should land on the parent home screen.
+
+You should land on the family-facing home screen.
 
 What to notice:
 
-- This is the family-facing side of the app.
-- The experience is designed around the Weekly Huddle, not a generic dashboard.
+- this is designed around the current week
+- the experience starts with the Weekly Huddle, not a generic dashboard
+- the app is trying to reduce the need for parents to search through email, texts, and website pages
 
 ## 2. Home Screen: Weekly Huddle
 
-1. Stay on `/`.
-2. Review the home screen sections from top to bottom.
+Stay on `/`.
+
+Review the home screen from top to bottom.
 
 What to notice:
 
-- The app highlights the current week first.
-- Urgent or important items are surfaced before everything else.
-- Families can quickly see action items, events, and volunteer needs in one place.
-- This is meant to replace the need to search through emails and scattered links.
+- the Weekly Huddle is the center of the experience
+- the page brings together updates, action items, schedule, and volunteer needs
+- this is trying to answer "what do I need to know this week?" very quickly
+- this is where important website-backed details can be surfaced in a more useful weekly format
 
-Suggested takeaway:
+Why this matters for staff:
 
-"A family should be able to open the app and understand the week in under 30 seconds."
+- families are less dependent on scattered reminders
+- one published huddle can support multiple views across the app
+- important public information can be moved from "go find it" into "here is what matters now"
 
-## 3. Family Profile And Setup
+Good summary line:
 
-1. Click `More` or go to `/profile`.
+"Instead of making families piece the week together themselves, the week is assembled for them."
+
+## 3. Family Profile
+
+1. Open `/profile`, or tap `More`.
 2. Review the family profile screen.
 
-What to click:
+What to notice:
 
-- Look at family name, guardian info, player info, and team assignment.
-- Scroll to notification preferences.
-- Scroll to family progress and setup checklist.
+- household information
+- guardian information
+- player information
+- team assignment
+- notification preferences
+- family progress
 
 Optional interaction:
 
-1. Update a field like phone number, player position, or family notes.
+1. Update a field like phone number, notes, position, or player details.
 2. Click `Save family profile`.
 
-What to notice:
+Why this matters:
 
-- The app is centered on the family as the main unit.
-- Actions, volunteer tracking, and schedule context all depend on having the right family and player information.
-- This is one of the pieces that makes the experience personalized rather than generic.
+- this is what makes the app specific to a real family
+- it gives future action tracking, notifications, and volunteer records the right context
+- it can reduce "which team is this for?" confusion
+- it lays the groundwork for team-specific experiences like Varsity, C-Team, and parent-specific information
 
 ## 4. Action Center
 
 1. Open `/actions`.
-2. Review the checklist items.
+2. Review the checklist.
 
 What to click:
 
-- Try filters like `Required`, `Due soon`, and `Complete`.
-- Open one of the external links if you want to see how outside resources are attached.
-- Click `Mark Complete` on one action item.
+- try `Required`
+- try `Due soon`
+- try `Complete`
+- click `Mark Complete` on one item
+- click `Open Link` if you want to see how outside website resources connect into the app
 
 What to notice:
 
-- This turns weekly communication into a structured checklist.
-- Families can see what is urgent, what is due soon, and what is already done.
-- Completion is tracked rather than left to memory.
+- this turns reminders into trackable tasks
+- parents can immediately see what is urgent and what is done
+- the staff no longer has to rely only on "we sent the reminder"
 
-Suggested takeaway:
+Why this matters for coaches and secretaries:
 
-"Instead of reading a newsletter and then making your own to-do list, the to-do list is already built for you."
+- it reduces ambiguity
+- it creates a clearer completion workflow
+- it shows how Weekly Huddle content can become structured, actionable information
+- it creates a better bridge between public pages like Register, Dues, CWU Camp, and what a family still needs to do
 
-## 5. Calendar And Event Detail
+Good summary line:
+
+"The to-do list is already built for the family instead of being buried inside a message."
+
+## 5. Schedule And Event Detail
 
 1. Open `/schedule`.
 2. Review the event list.
+3. Open an event detail page.
 
-What to click:
+What to notice:
 
-- Try the filters at the top.
-- Click into one event to open the detail page.
+- this is meant to become the trusted schedule
+- the app can show audience, location, arrival details, notes, and last updated time
+- this is trying to answer the real parent questions before they need to ask them
 
-What to notice on the schedule page:
+Why this matters for staff:
 
-- Events are organized as practical family logistics.
-- Audience labels help show who the item applies to.
-- This is meant to be the trusted calendar, not just a feed of announcements.
+- fewer repeated questions like:
+  - what time do we arrive?
+  - where is it?
+  - is this varsity only?
+  - what do they wear?
+- it gives staff one place to keep logistics current
+- it opens the door for clearer schedule views tied to the public calendar, key dates, team schedules, and event pages
 
-What to notice on the event detail page:
+Good summary line:
 
-- Date and time
-- Location and address
-- Arrival or bus details
-- Uniform or equipment notes
-- Coach note
-- Last updated time
-
-Suggested takeaway:
-
-"This page is trying to answer the parent questions: where do I go, when do I show up, what do I bring, and who is this for?"
+"This is where a family goes to confirm details, not guess."
 
 ## 6. Volunteer Screen
 
 1. Open `/volunteers`.
-2. Review the open roles and progress summary.
-
-What to click:
-
-- Try the category filters.
-- Click `Sign Up` for an open role.
-- Confirm the role appears under claimed or confirmed shifts.
-- If helpful, click again to cancel and show that the change can be reversed.
+2. Review the open roles and volunteer progress.
+3. Click `Sign Up` on one role.
 
 What to notice:
 
-- Volunteer work is visible inside the family experience, not hidden in a separate signup tool.
-- Families can see both open opportunities and their own progress.
-- This makes volunteer expectations easier to manage during the season.
+- volunteer needs are built into the family workflow
+- signups and progress are visible in the same app as the weekly communication
+- families can see both open needs and their own contribution
 
-## Part 2: Coach / Admin Experience
+Why this matters for staff:
+
+- volunteer asks become clearer and more visible
+- the app can reduce the need for separate signup tools and repeated reminders
+- it pairs naturally with the public Parents, Volunteering, FAQ, and FGIC sections families already use
+
+## Transition To Staff View
+
+At this point, the key idea to explain is:
+
+"Everything the parent just saw depends on staff being able to manage the information once and publish it cleanly."
+
+Now switch to the coach/admin side.
+
+## Part 2: What Staff Would Manage
 
 ## 7. Sign In As A Coach
 
 1. Sign out of the parent account.
-2. Return to `/auth`.
-3. Sign in with:
-   `coach@demo.com`
+2. Go to `/auth`.
+3. Sign in with `coach@demo.com`.
 4. Enter the demo password.
 5. Open `/admin`.
 
 What to notice:
 
-- This is the admin side of the MVP.
-- It is meant for coaches, team parents, or admins managing the weekly flow of information.
+- this is the staff/admin side of the product
+- this is where the information families rely on gets created and maintained
 
 ## 8. Admin Dashboard
 
-1. Stay on `/admin`.
-2. Review the dashboard cards and work queue.
+Stay on `/admin`.
+
+Review the cards and work queue.
 
 What to notice:
 
-- Current huddle status
-- Action completion snapshot
-- Volunteer gaps
-- Families still missing setup
-- Items needing admin attention
+- huddle status
+- action completion snapshot
+- volunteer gaps
+- family setup gaps
+- issues that may need follow-up
 
-Suggested takeaway:
+Why this matters:
 
-"This is not just a content page. It is an operational view of what needs attention before families receive the next update."
+- it starts to shift the app from "content publishing" into "program operations"
+- staff can see where attention is needed before families ever receive the next update
+
+Good summary line:
+
+"This is not just a page builder. It starts to become a control panel for the week."
 
 ## 9. Huddle Editor
 
 1. Open `/admin/huddles/new`.
-2. Review the draft editor.
+2. Review the huddle editor.
 
-What to click:
+What to look at:
 
-- Look at the huddle details at the top.
-- Review the structured sections.
-- Scroll to `This Week's Playbook`.
-- Look at the preview panel on the right.
+- huddle summary
+- structured sections
+- action items
+- preview panel
 
 Optional interaction:
 
-1. Update the summary text or edit one action item title.
-2. Click `Save Draft`.
+1. Edit the summary.
+2. Edit one action title.
+3. Click `Save Draft`.
+4. If you want to test the full flow, click `Publish Huddle`.
 
-What to notice:
+After publishing:
 
-- The Weekly Huddle is being treated as structured content, not just a long email.
-- The same core content can drive the home screen, actions, and related sections.
-- The live preview helps staff understand what families will actually see.
+1. Sign back in as the parent.
+2. Confirm the updated summary and action item appear on the parent side.
 
-If you are comfortable testing it:
+Why this matters:
 
-1. Click `Publish Huddle`.
+- the Weekly Huddle is treated as structured content, not just a newsletter
+- one update can feed the home screen and the Action Center
+- this reduces re-entering or duplicating the same information in multiple places
+- it creates a path for items like Key Dates, Hawaii Travel Hub, CWU Camp, dues, and registration to show up in a guided private workflow
 
-What to notice:
+Good summary line:
 
-- The MVP already includes a draft-to-publish workflow.
+"The same weekly update can power the whole family experience."
 
 ## 10. Action Manager
 
 1. Open `/admin/actions`.
-2. Review the current action items.
-
-What to click:
-
-- Click `Edit` on an existing action item.
-- Review fields like title, importance, due date, audience, and external URL.
-
-Optional interaction:
-
-1. Create a new action item.
-2. Save it.
+2. Review the action items.
 
 What to notice:
 
-- Admins can directly manage the checklist families see.
-- Items can be marked as required, family-related, optional, or informational.
-- This is one of the main tools for turning weekly communication into trackable tasks.
+- title
+- importance
+- audience
+- due date
+- external link
+
+Why this matters:
+
+- staff can directly manage the tasks families see
+- required items can be kept visible and organized
+- this can help reduce missed deadlines and manual chasing
+- this is where public website information becomes actionable, especially registration, dues, travel prep, and camp requirements
 
 ## 11. Calendar Manager
 
 1. Open `/admin/calendar`.
 2. Review the event list.
 
-What to click:
-
-- Click `Edit` on an event.
-- Review fields for team, audience, date/time, location, arrival, bus, and gear notes.
-
-Optional interaction:
-
-1. Update an event detail.
-2. Save it.
-
 What to notice:
 
-- Coaches/admins can keep event logistics current in one place.
-- This is what supports the trusted event detail view on the parent side.
+- team or audience targeting
+- location and logistics
+- arrival and bus details
+- equipment or uniform notes
+
+Why this matters:
+
+- it supports a single source of truth for schedule detail
+- it helps families trust the app instead of asking around
+- it supports future team-specific schedule views and better integration with public calendar content
 
 ## 12. Volunteer Manager
 
 1. Open `/admin/volunteers`.
-2. Review the volunteer slots and gap counts.
-
-What to click:
-
-- Click `Edit` on a slot.
-- Review fields like category, date/time, location, slots needed, and hour credit.
-
-Optional interaction:
-
-1. Create or edit a volunteer slot.
-2. Save it.
+2. Review the volunteer slots and gaps.
 
 What to notice:
 
-- Admins can publish real volunteer needs and track coverage.
-- The parent-facing volunteer view is directly connected to these records.
+- categories
+- time and location
+- slots needed
+- hour credit
 
-## Best Short Summary To Share
+Why this matters:
 
-If you only want to describe the MVP in one paragraph, use this:
+- this connects staff planning directly to the family-facing volunteer view
+- it shows how the app could help manage real season operations, not just messages
+- it also supports the broader coordination work that connects to FGIC, parent support, and public volunteer information
 
-"Gridiron Connect is a private Weekly Huddle app for Woodinville Football families and staff. Parents can sign in, see what matters this week, track required tasks, check trusted event details, and claim volunteer roles. Coaches and admins can draft the Weekly Huddle and manage the action items, calendar events, and volunteer needs that families rely on."
+## What To Say At The End
+
+If you want a strong closing summary, use this:
+
+"Gridiron Connect is a private weekly command center for Woodinville Football. Families can open one app to understand the week, complete action items, check trusted event details, and sign up for volunteer needs. Staff can manage that information once and publish it in a more structured, useful way than email alone."
+
+If you want a version that emphasizes the website relationship, use this:
+
+"The public website remains the front door for Woodinville Football. Gridiron Connect becomes the private companion behind it, helping families act on schedules, key dates, camp info, registration items, volunteer needs, and team communication more easily."
+
+## Future Potential To Point Out
+
+If you want to talk about where this could go next, mention:
+
+- urgent alerts
+- richer team targeting
+- better completion tracking
+- document and form access
+- stronger volunteer coordination
+- a more complete family and player record
+- deeper integration with public website sections like team pages, coaching staff, FAQs, sponsors, FGIC resources, and legacy content
 
 ## If Something Does Not Work
 
 Try these checks:
 
-- Refresh the page
-- Confirm you are using the correct demo account
-- Confirm you are on the correct route
-- If sign-in is unavailable, use the preview routes instead
+- refresh the page
+- confirm the correct account is being used
+- confirm the correct route
+- if sign-in is unavailable, use the preview routes
 
-If a page shows fallback content, that usually means the UI loaded but the live Supabase data for that section was unavailable.
+If a page shows fallback content, that usually means the interface loaded but the live Supabase data for that section was unavailable.
