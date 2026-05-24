@@ -18,7 +18,7 @@ export function AuthShell({ title, subtitle, children, footerLink }: AuthShellPr
     <IPhoneFrame>
       <div className="flex h-full min-h-screen flex-col justify-center bg-ink-100 px-4 py-8 md:min-h-0 md:overflow-y-auto">
         <section className="w-full">
-          <div className="mb-6 text-center">
+          <div className="pointer-events-none mb-6 text-center">
             <WoodinvilleLogo size={56} priority className="mx-auto mb-4 rounded-lg bg-white ring-white/60" />
             <p className="brand-kicker justify-center">Woodinville Football</p>
             <h1 className="mt-2 font-display text-4xl text-ink-950">Gridiron Connect</h1>
