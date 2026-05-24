@@ -20,7 +20,7 @@ const navItems: Array<{
   { key: 'actions', label: 'Actions', href: '/actions', icon: ClipboardList },
   { key: 'calendar', label: 'Calendar', href: '/schedule', icon: CalendarDays },
   { key: 'volunteer', label: 'Volunteer', href: '/volunteers', icon: Users },
-  { key: 'more', label: 'More', href: '/profile', icon: Menu },
+  { key: 'more', label: 'More', href: '/more', icon: Menu },
 ]
 
 interface ParentShellProps {
